@@ -2,9 +2,7 @@
 
 #include <iostream>
 IRR_filter::IRR_filter(Mat image):
-    conv_filter(),
-    q(1),
-    eps(0.0001)
+    conv_filter()
 {
     CV_Assert(image.type()==CV_8UC1);
     B=Mat::zeros(image.rows,image.cols,CV_8UC1);

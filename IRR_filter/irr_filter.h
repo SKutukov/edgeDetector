@@ -14,8 +14,8 @@ public:
     Mat proc();
 private:
     Convolution_filter conv_filter;
-    double eps=0.001;
-    ///
+    double eps=0.0001;
+    double q=1;
     Mat edge;
     Mat image;
     Mat U_min;
@@ -28,7 +28,6 @@ private:
     Mat error;
     Mat error_abs;
     double sigma;
-    double q;
     void calculateZCE();
     void calculateControlSignal();
     void minimaze_energi_fun();
