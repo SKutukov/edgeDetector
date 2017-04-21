@@ -23,7 +23,18 @@ pkg-config --modversion opencv
 ```bash
 sudo apt-get install libtbb-dev
 ```
-
+guide: [gtest on ubuntu](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
+### install gtest
+```bash
+sudo apt-get install libgtest-dev
+sudo apt-get install cmake # install cmake
+cd /usr/src/gtest
+sudo cmake CMakeLists.txt
+sudo make
+ 
+# copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
+sudo cp *.a /usr/lib
+```
 ## run
 ```bash
 qmake edgeDetectors.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug && make -j4 
