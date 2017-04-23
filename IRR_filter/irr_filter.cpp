@@ -5,12 +5,12 @@ IRR_filter::IRR_filter(Mat image):
     conv_filter()
 {
     CV_Assert(image.type()==CV_8UC1);
-    B=Mat::zeros(image.rows,image.cols,CV_8UC1);
-    U_min=image.clone();
+    B=Mat::ones(image.rows,image.cols,CV_8UC1);
+    U_min=cv::Mat::zeros(image.rows,image.cols,CV_32FC1);
     this->image=image.clone();
-    L_h=Mat::zeros(image.rows,image.cols,CV_32FC1);
-    L_v=Mat::zeros(image.rows,image.cols,CV_32FC1);
-    L=Mat::zeros(image.rows,image.cols,CV_32FC1);
+    L_h=Mat::ones(image.rows,image.cols,CV_32FC1);
+    L_v=Mat::ones(image.rows,image.cols,CV_32FC1);
+    L=Mat::ones(image.rows,image.cols,CV_32FC1);
     for(int y=1;y<image.rows-1;y++)
     {
         float* L_h_row = L_h.ptr<float>(y);
@@ -28,21 +28,22 @@ IRR_filter::IRR_filter(Mat image):
         }
     }
 
-    for(auto i=0;i<B.rows;i++)
-        for (auto j=0;j<B.rows;j++)
-                {
-                if(image.at<int>(i,j))
-                {
-                    B.at<int>(i,j)=1;
-                }
-        }
+
+//    for(auto i=0;i<B.rows;i++)
+//        for (auto j=0;j<B.rows;j++)
+//                {
+//                if(image.at<int>(i,j))
+//                {
+//                    B.at<int>(i,j)=1;
+//                }
+//        }
 
 
 }
 
 Mat IRR_filter::proc()
 {
-    edge=Mat::zeros(image.rows,image.cols,CV_8U);
+    edge=Mat::zeros(image.rows,image.cols,CV_16SC1);
     double dL=2*eps;
     while(dL>eps)
     {
@@ -60,41 +61,41 @@ Mat IRR_filter::proc()
         updateLambda();
         dL=eps/2;
     }
-
+    edge.convertTo(edge,CV_8UC1);
     return edge;
 }
 #include <iostream>
 void IRR_filter::minimaze_energi_fun()
 {
-    Mat U=Mat::zeros(image.rows,image.cols,CV_32FC1);
+    q=0.5;
     Mat U_n;
     image.convertTo(U_n,CV_32FC1);
     int begin=1;
     double dU=2*eps;
     int i=0;
-    while(dU>eps && i<10)
+    while(dU>eps && i<200)
     {
-        for(int y=begin;y<U.rows-1;y++)
+        for(int y=begin;y<U_min.rows-1;y++)
         {
             const short* B_row = B.ptr<short>(y);
-            const short* U_n_row = U_n.ptr<short>(y);
+            const float* U_n_row = U_n.ptr<float>(y);
             const float* L_h_row_y = L_h.ptr<float>(y);
             const float* L_h_row_y_1 = L_h.ptr<float>(y+1);
             const float* L_v_row = L_v.ptr<float>(y);
-            for (int x=begin;x<U.cols-1;x++)
+            for (int x=begin;x<U_min.cols-1;x++)
                 {
                     float T=B_row[x]+L_h_row_y[x]+L_h_row_y_1[x]+L_v_row[x]+L_v_row[x+1];
-                    int a=(L_h_row_y[x]*U.at<float>(y-1,x)+L_h_row_y_1[x]*U_n.at<float>(y+1,x)+
-                          L_v_row[x]*U.at<float>(y,x-1)+L_v_row[x+1]*U.at<float>(y,x+1));
-                    U.at<short>(x,y)=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image.at<short>(y,x)-a)/T;
+                    float a=(L_h_row_y[x]*U_min.at<float>(y-1,x)+L_h_row_y_1[x]*U_n.at<float>(y+1,x)+
+                          L_v_row[x]*U_min.at<float>(y,x-1)+L_v_row[x+1]*U_min.at<float>(y,x+1));
+                    U_min.at<float>(x,y)=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image.at<short>(y,x)-a)/T;
                 }
         }
-        dU=cv::norm(U-U_n);
-        std::cout<<dU<<std::endl;
-        U_n=U.clone();
+        dU=cv::norm(U_min-U_n,cv::NORM_L1);
+        std::cout<<i<<"|dU: "<<dU<<' '<<' '<<eps<<' '<<(dU>eps)<<std::endl;
+        U_n=U_min.clone();
         i++;
     }
-    U_min=U.clone();
+    std::cout<<i<<"|dU:"<<dU<<std::endl;
     std::cout<<i<<std::endl;
 }
 void IRR_filter::compute_error()

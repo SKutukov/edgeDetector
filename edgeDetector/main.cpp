@@ -29,12 +29,12 @@ const QString STD_PATH="./sources/";
 int main(int argc, char *argv[])
 {
     cv::Mat dest;
-    cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
+    cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/3.jpg",CV_LOAD_IMAGE_ANYDEPTH);
     procesing(image,dest,35,90,IRR);
     cv::imshow("test",dest);
     cv::waitKey(0);
-    //cv::imwrite("./result/res.jpg",dest);
-    //main_proc(argc,argv);
+    cv::imwrite("result/3.jpg",dest);
+//    main_proc(argc,argv);
 }
 
 /**
@@ -100,7 +100,7 @@ void main_proc(int argc, char *argv[])
         output_directory=parser.value(outputs_dir).toStdString();
     }
     /// ----------------------- get input directory -----------------------
-    QString input_directory="sources/";
+    QString input_directory="/home/skutukov/Pictures/sources/";
     if(parser.isSet(inputs_dir))
     {
         input_directory=parser.value(inputs_dir);
@@ -147,7 +147,7 @@ void main_proc(int argc, char *argv[])
                             //----------------- procesing ---------------------------
                             cv::Mat dest;
                             cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
-                            procesing(image,dest,threshold_value,threshold_max_value,LAPPLAS);
+                            procesing(image,dest,threshold_value,threshold_max_value,CANNY);
                             //---------------write result -----------------------------------
                             std::string output_name=output_directory+tmp.toStdString();
                             cv::imwrite(output_name, dest);
