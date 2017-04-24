@@ -20,6 +20,6 @@ enum procType{
  * @param threh
  * @param threh_max
  */
-void  procesing(cv::Mat image,cv::Mat & gray_image,int threh,int treh_max,procType type);
+void  procesing(cv::Mat image,cv::Mat & gray_image,int threh,int treh_max,procType type,double error=0.01);
 cv::Mat grayImage(cv::Mat image);
 #endif // PROCESSING_H

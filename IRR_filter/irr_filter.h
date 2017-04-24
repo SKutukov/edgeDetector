@@ -10,11 +10,11 @@ using cv::Mat;
 class IRR_filter
 {
 public:
-    IRR_filter(Mat image);
+    IRR_filter(Mat image,double error=0.01);
     Mat proc();
 private:
     Convolution_filter conv_filter;
-    double eps=0.01;
+    double eps;
     double q=1.;
     Mat edge;
     Mat image;

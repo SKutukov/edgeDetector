@@ -10,7 +10,7 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-void  procesing(cv::Mat image,cv::Mat & dest,int threh,int threh_max,procType type)
+void  procesing(cv::Mat image,cv::Mat & dest,int threh,int threh_max,procType type,double error)
 {
     switch (type)
      {
@@ -50,7 +50,7 @@ void  procesing(cv::Mat image,cv::Mat & dest,int threh,int threh_max,procType ty
      }
      case IRR:
      {
-        IRR_filter irr(image);
+        IRR_filter irr(image,error);
         dest=irr.proc();
 
      break;

@@ -28,12 +28,21 @@ void main_proc(int argc, char *argv[]);
 const QString STD_PATH="./sources/";
 int main(int argc, char *argv[])
 {
-    cv::Mat dest;
-    cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/3.jpg",CV_LOAD_IMAGE_ANYDEPTH);
-    procesing(image,dest,35,90,IRR);
-    cv::imshow("test",dest);
-    cv::waitKey(0);
-    cv::imwrite("result/3.jpg",dest);
+    auto func = [] (double error)
+    {
+        cv::Mat dest;
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/Поляризационный_фильтр/1/outNew(1.600000)(0.000000_45.000000_90.000000)_zenith.png",CV_LOAD_IMAGE_ANYDEPTH);
+        procesing(image,dest,35,90,IRR,error);
+        //cv::imshow("test",dest);
+        //cv::waitKey(0);
+        cv::imwrite("result/res_"+std::to_string(error)+".jpg",dest);
+     };
+    double error(10);
+    for(int i=0;i<5;i++)
+    {
+        func(error);
+        error/=10;
+    }
 //    main_proc(argc,argv);
 }
 
