@@ -1,4 +1,4 @@
-# edgeDetector
+# edgeDetector  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f28b4634ee1e4e0a9cf4d766e566584c)](https://www.codacy.com/app/SKutukov/edgeDetector?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SKutukov/edgeDetector&amp;utm_campaign=Badge_Grade)
 
 ## build:
 #### install opencv
