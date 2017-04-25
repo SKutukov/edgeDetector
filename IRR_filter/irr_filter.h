@@ -14,6 +14,9 @@ public:
     Mat proc();
 private:
     Convolution_filter conv_filter;
+    double V_t=10;
+    double tresh=35;
+    double l_min=5;
     double eps;
     double q=1.;
     Mat edge;
@@ -28,6 +31,7 @@ private:
     Mat error;
     Mat error_abs;
     double sigma;
+    double alha(float x);
     void calculateZCE();
     void calculateControlSignal();
     void minimaze_energi_fun();

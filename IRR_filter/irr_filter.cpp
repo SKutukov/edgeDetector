@@ -40,30 +40,6 @@ IRR_filter::IRR_filter(Mat image,double error):
 
 
 }
-
-Mat IRR_filter::proc()
-{
-    edge=Mat::zeros(image.rows,image.cols,CV_16SC1);
-    double dL=2*eps;
-    while(dL>eps)
-    {
-        ///2)-----------------mimimaze energi functional -------------------------
-        minimaze_energi_fun();
-        ///3.a.b)-----------------compute error  -------------------------
-        compute_error();
-        ///3.c)-----------------compute control signal  -------------------------
-        calculateControlSignal();
-        ///3.d)-----------------compute magnutude of zero crossing in error signal zce(x,y)  -------------------------
-        calculateZCE();
-        ///4)------------------ update edges ------------------------------------------
-        updateEdge();
-        ///5)------------------ update lambda -----------------------------------------
-        updateLambda();
-        dL=eps/2;
-    }
-    edge.convertTo(edge,CV_8UC1);
-    return edge;
-}
 ///todo::
 /// check dublicate with compute_error()
 double avarege_error(Mat A,Mat B)
@@ -78,6 +54,33 @@ double avarege_error(Mat A,Mat B)
     return error;
 }
 
+Mat IRR_filter::proc()
+{
+    edge=Mat::zeros(image.rows,image.cols,CV_16SC1);
+    double dL=2*eps;
+    int i=0;
+    while(dL>eps && i<5)
+    {
+        ///2)-----------------mimimaze energi functional -------------------------
+        minimaze_energi_fun();
+        ///3.a.b)-----------------compute error  -------------------------
+        compute_error();
+        ///3.c)-----------------compute control signal  -------------------------
+        calculateControlSignal();
+        ///3.d)-----------------compute magnutude of zero crossing in error signal zce(x,y)  -------------------------
+        calculateZCE();
+        ///4)------------------ update edges ------------------------------------------
+        updateEdge();
+        ///5)------------------ update lambda -----------------------------------------
+        Mat L_old=L.clone();
+        updateLambda();
+        dL=avarege_error(L_old,L);
+        std::cout<<i<<"|dL: "<<dL<<std::endl;
+        i++;
+    }
+    edge.convertTo(edge,CV_8UC1);
+    return edge;
+}
 #include <iostream>
 void IRR_filter::minimaze_energi_fun()
 {
@@ -205,7 +208,29 @@ void IRR_filter::updateEdge()
         }
     }
 }
+double IRR_filter::alha(float x)
+{
+    double exp=std::exp(-x/V_t);
+    return l_min*(1-exp)+x*(exp);
+}
+
 void IRR_filter::updateLambda()
 {
-
+    for(int y=0;y<L.rows;y++)
+    {
+        const float* control_signal_row = control_signal.ptr<float>(y);
+        const float* zce_row = zce.ptr<float>(y);
+        float* L_h_row = L_h.ptr<float>(y);
+        float* L_v_row = L_v.ptr<float>(y);
+        float* L_row = L.ptr<float>(y);
+        for(int x=0;x<L.cols;x++)
+        {
+            if(control_signal_row[x]>0 && zce_row[x]>tresh && L_row[x]>l_min )
+            {
+                L_v_row[x]=alha(L_v_row[x]);
+                L_h_row[x]=alha(L_h_row[x]);
+                L_row[x]=alha(L_row[x]);
+            }
+        }
+    }
 }
