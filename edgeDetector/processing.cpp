@@ -1,6 +1,9 @@
 #include "processing.h"
-#include "/home/skutukov/Documents/edgeDetector/IRR_filter/irr_filter.h"
+#include "irr_filter.h"
+#include "denoize_filter.h"
 #include "iostream"
+#include "opencv2/photo/photo.hpp"
+
 cv::Mat grayImage(cv::Mat image)
 {
     std::vector<cv::Mat> channels;
@@ -10,8 +13,9 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-void  procesing(cv::Mat image,cv::Mat & dest,int threh,int threh_max,procType type,double error)
+void  procesing(cv::Mat image, cv::Mat & dest, int threh, int threh_max, procType type, double error)
 {
+    cv::fastNlMeansDenoising(image, image, 15.0);
     switch (type)
      {
      case SOBEL:

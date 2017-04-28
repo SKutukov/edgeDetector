@@ -31,7 +31,8 @@ LIBS += -L/usr/local/lib \
 -lopencv_imgproc \
 -lopencv_highgui \
 -lopencv_imgcodecs \
--ltbb
+-ltbb \
+-lopencv_photo \
 
 
 

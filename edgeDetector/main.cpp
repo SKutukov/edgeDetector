@@ -28,21 +28,21 @@ void main_proc(int argc, char *argv[]);
 const QString STD_PATH="./sources/";
 int main(int argc, char *argv[])
 {
-    auto func = [] (double error)
-    {
-        cv::Mat dest;
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
-        procesing(image,dest,35,90,IRR,error);
-        //cv::imshow("test",dest);
-        //cv::waitKey(0);
-        cv::imwrite("result/res_"+std::to_string(error)+".jpg",dest);
-     };
-    double error(0.1);
-    ///for(int i=0;i<5;i++)
-    //{
-        func(error);
-    //}
-//    main_proc(argc,argv);
+//    auto func = [] (double error)
+//    {
+//        cv::Mat dest;
+//        cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
+//        procesing(image,dest,35,90,CANNY,error);
+//        //cv::imshow("test",dest);
+//        //cv::waitKey(0);
+//        cv::imwrite("./result/1.jpg",dest);
+//     };
+//    double error(0.1);
+//    ///for(int i=0;i<5;i++)
+//    //{
+//        func(error);
+//    //}
+     main_proc(argc,argv);
 }
 
 /**
@@ -61,7 +61,7 @@ void main_proc(int argc, char *argv[])
     QCoreApplication::setApplicationVersion("0.1.0");
     ////-----------------prepare Command line parser —----------------------------------
     QCommandLineParser parser;
-    QString str="Mode of blending: \n NO — no blending \n LINEAL — lineal blending \n MULTI — multiblending";
+    QString str="";
     parser.setApplicationDescription(str);
     parser.addHelpOption();
     parser.addVersionOption();
@@ -108,7 +108,7 @@ void main_proc(int argc, char *argv[])
         output_directory=parser.value(outputs_dir).toStdString();
     }
     /// ----------------------- get input directory -----------------------
-    QString input_directory="/home/skutukov/Pictures/sources/";
+    QString input_directory="/home/skutukov/Pictures/filter/1";
     if(parser.isSet(inputs_dir))
     {
         input_directory=parser.value(inputs_dir);
