@@ -15,7 +15,7 @@ cv::Mat grayImage(cv::Mat image)
 
 void  procesing(cv::Mat image, cv::Mat & dest, int threh, int threh_max, procType type, double error)
 {
-    cv::fastNlMeansDenoising(image, image, 15.0);
+    cv::fastNlMeansDenoising(image, image, 20.0);
     switch (type)
      {
      case SOBEL:

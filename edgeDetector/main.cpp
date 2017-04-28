@@ -28,21 +28,21 @@ void main_proc(int argc, char *argv[]);
 const QString STD_PATH="./sources/";
 int main(int argc, char *argv[])
 {
-//    auto func = [] (double error)
-//    {
-//        cv::Mat dest;
-//        cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
-//        procesing(image,dest,35,90,CANNY,error);
-//        //cv::imshow("test",dest);
-//        //cv::waitKey(0);
-//        cv::imwrite("./result/1.jpg",dest);
-//     };
-//    double error(0.1);
-//    ///for(int i=0;i<5;i++)
-//    //{
-//        func(error);
-//    //}
-     main_proc(argc,argv);
+    auto func = [] (double error)
+    {
+        cv::Mat dest;
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/filter/1/outNew(1.600000)(0.000000_45.000000_90.000000)_azimuth.png",CV_LOAD_IMAGE_ANYDEPTH);
+        procesing(image,dest,35,90,CANNY,error);
+        //cv::imshow("test",dest);
+        //cv::waitKey(0);
+        cv::imwrite("./result/outNew(1.600000)(0.000000_45.000000_90.000000)_azimuth.png",dest);
+     };
+    double error(0.1);
+    ///for(int i=0;i<5;i++)
+    //{
+        func(error);
+    //}
+ //    main_proc(argc,argv);
 }
 
 /**

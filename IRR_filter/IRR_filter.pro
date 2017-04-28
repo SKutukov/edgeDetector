@@ -34,4 +34,8 @@ LIBS += -L/usr/local/lib \
 -lopencv_imgproc \
 -lopencv_imgcodecs \
 
+HEADERS +=
+
+SOURCES +=
+
 

@@ -1,5 +1,5 @@
 #include "irr_filter.h"
-
+#include "auxiliary_function.h"
 #include <iostream>
 IRR_filter::IRR_filter(Mat image,double error):
     conv_filter(),eps(error)
@@ -28,31 +28,8 @@ IRR_filter::IRR_filter(Mat image,double error):
         }
     }
 
-
-//    for(auto i=0;i<B.rows;i++)
-//        for (auto j=0;j<B.rows;j++)
-//                {
-//                if(image.at<int>(i,j))
-//                {
-//                    B.at<int>(i,j)=1;
-//                }
-//        }
-
-
 }
-///todo::
-/// check dublicate with compute_error()
-double avarege_error(Mat A,Mat B)
-{
-    CV_Assert(A.rows==B.rows);
-    CV_Assert(A.cols==B.cols);
-    double error=0;
-    for(int y=0;y<A.rows;y++)
-        for(int x=0;x<A.cols;x++)
-            error+=std::fabs(A.at<float>(y,x)-B.at<float>(y,x));
-    error/=(A.rows)*(A.cols);
-    return error;
-}
+
 
 Mat IRR_filter::proc()
 {

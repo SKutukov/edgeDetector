@@ -12,7 +12,9 @@ public:
     denoize_filter(float force);
     void apply(Mat src,Mat dst);
 private:
-    float force;
+    double eps=0.1;
+    double force;
+    double tay=0.25;
 };
 
 #endif // NOIZE_FILTER_H
