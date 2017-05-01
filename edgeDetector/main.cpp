@@ -25,17 +25,31 @@ std::string trackbar_max_value = "Max value";
 void Threshold_Demo( int, void* );
 void main_proc(int argc, char *argv[]);
 
+
 const QString STD_PATH="./sources/";
+using namespace cv;
+using namespace std;
 int main(int argc, char *argv[])
 {
     auto func = [] (double error)
     {
-        cv::Mat dest;
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/filter/1/outNew(1.600000)(0.000000_45.000000_90.000000)_azimuth.png",CV_LOAD_IMAGE_ANYDEPTH);
-        procesing(image,dest,35,90,CANNY,error);
+
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/filter/3/IMG90.jpg",CV_LOAD_IMAGE_ANYDEPTH);
+        cv::Mat dest=procesing(image,35,90,CANNY,error);
         //cv::imshow("test",dest);
         //cv::waitKey(0);
-        cv::imwrite("./result/outNew(1.600000)(0.000000_45.000000_90.000000)_azimuth.png",dest);
+//        std::vector<vector<cv::Point> > contours;
+//        std::vector<Vec4i> hierarchy;
+//        cv::findContours( dest, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+//        /// Draw contours
+//        cv::Mat drawing = cv::Mat::zeros( dest.size(), CV_8UC3 );
+//        for( int i = 0; i< contours.size(); i++ )
+//           {
+//             cv::Scalar color = cv::Scalar( 0, 0, 255 );
+//             cv::drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
+//           }
+//        dest=drawing
+        cv::imwrite("./result/IMG90.jpg",dest);
      };
     double error(0.1);
     ///for(int i=0;i<5;i++)
@@ -50,7 +64,7 @@ int main(int argc, char *argv[])
  */
 void Threshold_Demo( int, void* )
 {
-    procesing(src_gray,dst,threshold_value,threshold_max_value,CANNY);
+    dst=procesing(src_gray,threshold_value,threshold_max_value,CANNY,20.);
     cv::imshow( window_name, dst );
 
 }
@@ -153,9 +167,9 @@ void main_proc(int argc, char *argv[])
                             auto tmp=func(filename,"/");
                             std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
                             //----------------- procesing ---------------------------
-                            cv::Mat dest;
+
                             cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
-                            procesing(image,dest,threshold_value,threshold_max_value,CANNY);
+                            cv::Mat dest=procesing(image,threshold_value,threshold_max_value,CANNY);
                             //---------------write result -----------------------------------
                             std::string output_name=output_directory+tmp.toStdString();
                             cv::imwrite(output_name, dest);

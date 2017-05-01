@@ -13,9 +13,13 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-void  procesing(cv::Mat image, cv::Mat & dest, int threh, int threh_max, procType type, double error)
+cv::Mat  procesing(cv::Mat image, int threh, int threh_max, procType type, double error,double force)
 {
-    cv::fastNlMeansDenoising(image, image, 20.0);
+    cv::Mat  dest;
+    if(force>0)
+    {
+        cv::fastNlMeansDenoising(image, image, force);
+    }
     switch (type)
      {
      case SOBEL:
@@ -64,5 +68,6 @@ void  procesing(cv::Mat image, cv::Mat & dest, int threh, int threh_max, procTyp
         std::cout<<" wrong procType"<<std::endl;
      }
      }
+     return  dest;
 
 }
