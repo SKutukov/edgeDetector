@@ -3,17 +3,17 @@
 #include <iostream>
 #include "opencv2/photo/photo.hpp"
 int main()
-{
-    cv::Mat src = cv::imread("/home/skutukov/Pictures/filter/1/IMG90.jpg");
-    cv::fastNlMeansDenoising(src, src, 20);
+{   std::string out="/home/skutukov/Pictures/segment/";
+    cv::Mat src = cv::imread("/home/skutukov/Pictures/filter/1/1.jpg");
+    cv::fastNlMeansDenoising(src, src, 18);
     if (!src.data)
     return -1;
-    cv::imwrite("./src.jpg",src);
+    cv::imwrite(out+"src.jpg",src);
     // Create binary image from source image
     cv::Mat bw;
     cv::cvtColor(src, bw, CV_BGR2GRAY);
     cv::threshold(bw, bw, 40, 255, CV_THRESH_BINARY);
-   cv::imwrite("./bw.jpg", bw);
+    cv::imwrite(out+"bw.jpg", bw);
 
     // Perform the distance transform algorithm
     cv::Mat dist;
@@ -22,12 +22,12 @@ int main()
     // Normalize the distance image for range = {0.0, 1.0}
     // so we can visualize and threshold it
     cv::normalize(dist, dist, 0, 1., cv::NORM_MINMAX);
-   cv::imwrite("./dist.jpg", dist);
+   cv::imwrite(out+"dist.jpg", dist);
 
     // Threshold to obtain the peaks
     // This will be the markers for the foreground objects
-    cv::threshold(dist, dist, .5, 1., CV_THRESH_BINARY);
-   cv::imwrite("./dist2.jpg", dist);
+   cv::threshold(dist, dist, .5, 1., CV_THRESH_BINARY);
+   cv::imwrite(out+"dist2.jpg", dist);
 
     // Create the CV_8U version of the distance image
     // It is needed for cv::findContours()
@@ -48,7 +48,7 @@ int main()
 
     // Draw the background marker
     cv::circle(markers, cv::Point(5,5), 3, CV_RGB(255,255,255), -1);
-   cv::imwrite("./markers.jpg", markers*10000);
+   cv::imwrite(out+"markers.jpg", markers*10000);
 
     // Perform the watershed algorithm
     cv::watershed(src, markers);
@@ -77,7 +77,7 @@ int main()
     }
     }
 
-   cv::imwrite("./dst.jpg", dst);
+   cv::imwrite(out+"dst.jpg", dst);
 
     return 0;
 }
