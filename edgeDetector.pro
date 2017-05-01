@@ -5,3 +5,4 @@ SUBDIRS += \
     IRR_filter \
     edgeDetectorTest \
     Segmentation
+

@@ -7,6 +7,6 @@ Convolution_filter::Convolution_filter()
 Mat Convolution_filter::apply(Mat image)
 {
     Mat dest;
-    cv::filter2D(image,dest,ddepth,kernel,anchor, delta, BORDER_MODE);
+    cv::filter2D(image, dest, ddepth, kernel, anchor, delta, BORDER_MODE);
     return dest;
 }

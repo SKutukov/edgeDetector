@@ -70,13 +70,12 @@ int main()
     // Fill labeled objects with random colors
     for (int i = 0; i < markers.rows; i++)
     {
-    for (int j = 0; j < markers.cols; j++)
-    {
-        int index = markers.at<int>(i,j);
-        dst.at<cv::Vec3b>(i,j) = index > 0 && index <= ncomp ? colors[index - 1] : cv::Vec3b(0, 0, 0);
+        for (int j = 0; j < markers.cols; j++)
+        {
+           int index = markers.at<int>(i,j);
+          dst.at<cv::Vec3b>(i,j) = index > 0 && index <= ncomp ? colors[index - 1] : cv::Vec3b(0, 0, 0);
+        }
     }
-    }
-
    cv::imwrite(out+"dst.jpg", dst);
 
     return 0;

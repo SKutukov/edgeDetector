@@ -7,7 +7,7 @@ double avarege_error(cv::Mat A,cv::Mat B)
     double error=0;
     for(int y=0;y<A.rows;y++)
         for(int x=0;x<A.cols;x++)
-            error+=std::fabs(A.at<float>(y,x)-B.at<float>(y,x));
+            error+=std::fabs(A.at<float>(y, x)-B.at<float>(y, x));
     error/=(A.rows)*(A.cols);
     return error;
 }

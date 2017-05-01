@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     auto func = [] (double error)
     {
 
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/filter/3/IMG90.jpg",CV_LOAD_IMAGE_ANYDEPTH);
-        cv::Mat dest=procesing(image,35,90,CANNY,error);
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
+        cv::Mat dest=procesing(image,35,90,IRR,error,18);
         //cv::imshow("test",dest);
         //cv::waitKey(0);
 //        std::vector<vector<cv::Point> > contours;
@@ -49,14 +49,15 @@ int main(int argc, char *argv[])
 //             cv::drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
 //           }
 //        dest=drawing
-        cv::imwrite("./result/IMG90.jpg",dest);
+        cv::imwrite("./result/1.jpg",dest);
      };
     double error(0.1);
-    ///for(int i=0;i<5;i++)
-    //{
-        func(error);
-    //}
- //    main_proc(argc,argv);
+//    ///for(int i=0;i<5;i++)
+//    //{
+//
+//    func(error);
+//    //}
+     main_proc(argc,argv);
 }
 
 /**
@@ -68,6 +69,8 @@ void Threshold_Demo( int, void* )
     cv::imshow( window_name, dst );
 
 }
+QString input_directory="/home/skutukov/Pictures/sources(copy)";
+std::string output_directory="/home/skutukov/Pictures/IRR/";
 void main_proc(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -116,13 +119,12 @@ void main_proc(int argc, char *argv[])
         }
     }
     /// ----------------------- get output directory -----------------------
-    std::string output_directory="result/";
     if(parser.isSet(outputs_dir))
     {
         output_directory=parser.value(outputs_dir).toStdString();
     }
     /// ----------------------- get input directory -----------------------
-    QString input_directory="/home/skutukov/Pictures/filter/1";
+
     if(parser.isSet(inputs_dir))
     {
         input_directory=parser.value(inputs_dir);
@@ -160,20 +162,23 @@ void main_proc(int argc, char *argv[])
             }
         }
 
-        tbb::parallel_for (size_t(0), sources.size(), size_t(1),
-                        [=](size_t i)
-                        {
-                            QString filename=sources[i];
-                            auto tmp=func(filename,"/");
-                            std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
-                            //----------------- procesing ---------------------------
+//      tbb::parallel_for (size_t(0), sources.size(), size_t(1),
+//                      [=](size_t i)
+        for(int i=0;i<sources.size();i++)
+                      {
+                          QString filename=sources[i];
+                          auto tmp=func(filename,"/");
+                          std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
+                          //----------------- procesing ---------------------------
 
-                            cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
-                            cv::Mat dest=procesing(image,threshold_value,threshold_max_value,CANNY);
-                            //---------------write result -----------------------------------
-                            std::string output_name=output_directory+tmp.toStdString();
-                            cv::imwrite(output_name, dest);
-                        });
+                          cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
+                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,IRR);
+                          //---------------write result -----------------------------------
+                          std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
+                          std::string output_name=output_directory+tmp.toStdString();
+                          cv::imwrite(output_name, dest);
+                      }
+        //);
     }
     if(isGui)
     {

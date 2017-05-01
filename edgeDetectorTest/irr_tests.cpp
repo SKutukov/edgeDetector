@@ -14,6 +14,8 @@ TEST(Test_sample, test_sample)
     //cv::waitKey(0);
    // test_image=cv::Mat::zeros( test_image.size(), CV_8UC3 );
     int a=0,b=0;
+//    a=countNonZero(test_image);
+//    b=countNonZero(image-test_image);
     for(int y=0;y<image.rows;y++)
     {
         const cv::Point3_<short>* test_image_row=test_image.ptr<cv::Point3_<short>>(y);

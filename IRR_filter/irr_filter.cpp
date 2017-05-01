@@ -5,12 +5,12 @@ IRR_filter::IRR_filter(Mat image,double error):
     conv_filter(),eps(error)
 {
     CV_Assert(image.type()==CV_8UC1);
-    B=Mat::ones(image.rows,image.cols,CV_8UC1);
-    U_min=cv::Mat::zeros(image.rows,image.cols,CV_32FC1);
+    B=Mat::ones(image.size(),CV_8UC1);
+    U_min=cv::Mat::zeros(image.size(),CV_32FC1);
     this->image=image.clone();
-    L_h=Mat::ones(image.rows,image.cols,CV_32FC1);
-    L_v=Mat::ones(image.rows,image.cols,CV_32FC1);
-    L=Mat::ones(image.rows,image.cols,CV_32FC1);
+    L_h=Mat::ones(image.size(),CV_32FC1);
+    L_v=Mat::ones(image.size(),CV_32FC1);
+    L=Mat::ones(image.size(),CV_32FC1);
     for(int y=1;y<image.rows-1;y++)
     {
         float* L_h_row = L_h.ptr<float>(y);
@@ -22,9 +22,9 @@ IRR_filter::IRR_filter(Mat image,double error):
         const short* image_row3=image.ptr<short>(y+1);
         for(int x=1;x<image.cols-1;x++)
         {
-                L_v_row[x]=std::max(fabs(image_row1[x]-image_row2[x]),fabs(image_row3[x]-image_row2[x]));
-                L_h_row[x]=std::max(fabs(image_row2[x]-image_row2[x-1]),fabs(image_row2[x]-image_row2[x+1]));
-                L_row[x]=std::max(L_h_row[x],L_v_row[x]);
+                L_v_row[x]=std::max(fabs(image_row1[x]-image_row2[x]), fabs(image_row3[x]-image_row2[x]));
+                L_h_row[x]=std::max(fabs(image_row2[x]-image_row2[x-1]), fabs(image_row2[x]-image_row2[x+1]));
+                L_row[x]=std::max(L_h_row[x], L_v_row[x]);
         }
     }
 
@@ -33,7 +33,7 @@ IRR_filter::IRR_filter(Mat image,double error):
 
 Mat IRR_filter::proc()
 {
-    edge=Mat::zeros(image.rows,image.cols,CV_16SC1);
+    edge=Mat::zeros(image.size(), CV_16SC1);
     double dL=2*eps;
     int i=0;
     while(dL>eps && i<5)
@@ -51,9 +51,10 @@ Mat IRR_filter::proc()
         ///5)------------------ update lambda -----------------------------------------
         Mat L_old=L.clone();
         updateLambda();
-        dL=avarege_error(L_old,L);
+        dL=avarege_error(L_old, L);
         std::cout<<i<<"|dL: "<<dL<<std::endl;
         i++;
+
     }
     edge.convertTo(edge,CV_8UC1);
     return edge;
@@ -61,7 +62,7 @@ Mat IRR_filter::proc()
 #include <iostream>
 void IRR_filter::minimaze_energi_fun()
 {
-    Mat U_n=Mat::zeros(image.rows,image.cols,CV_32FC1);
+    Mat U_n=Mat::zeros(image.size(), CV_32FC1);
     int begin=1;
     double dU(2*eps);
     //double dU1,ddU(2*eps);
@@ -73,16 +74,19 @@ void IRR_filter::minimaze_energi_fun()
         for(int y=begin;y<U_min.rows-1;y++)
         {
             const short* B_row = B.ptr<short>(y);
+            const short* image_row = image.ptr<short>(y);
             const float* U_n_row = U_n.ptr<float>(y);
             const float* L_h_row_y = L_h.ptr<float>(y);
             const float* L_h_row_y_1 = L_h.ptr<float>(y+1);
             const float* L_v_row = L_v.ptr<float>(y);
+            const float* U_min_row = U_min.ptr<float>(y-1);
+            float* U_min_row1 = U_min.ptr<float>(y);
             for (int x=begin;x<U_min.cols-1;x++)
                 {
                     float T=B_row[x]+L_h_row_y[x]+L_h_row_y_1[x]+L_v_row[x]+L_v_row[x+1];
-                    float a=(L_h_row_y[x]*U_min.at<float>(y-1,x)+L_h_row_y_1[x]*U_n.at<float>(y+1,x)+
-                          L_v_row[x]*U_min.at<float>(y,x-1)+L_v_row[x+1]*U_min.at<float>(y,x+1));
-                    U_min.at<float>(y,x)=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image.at<short>(y,x)-a)/T;
+                    float a=(L_h_row_y[x]*U_min_row[x]+L_h_row_y_1[x]*U_n.at<float>(y+1,x)+
+                          L_v_row[x]*U_min_row1[x-1]+L_v_row[x+1]*U_min_row1[x+1]);
+                    U_min_row1[x]=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image_row[x]-a)/T;
                 }
         }
    //     dU1=dU;
@@ -130,12 +134,7 @@ void IRR_filter::calculateControlSignal()
 {
     //std::cout<<cv::norm(error_abs,cv::NORM_L2)<<std::endl;
     cv::Mat A=conv_filter.apply(error_abs);
-    for(auto i=0;i<A.rows;i++)
-        for (auto j=0;j<A.cols;j++)
-                    {
-            //std::cout<<A.at<float>(i,j)<<std::endl;
-            A.at<float>(i,j)-=sigma;
-        }
+    cv::subtract(A,cv::Scalar(sigma),A);
     control_signal=conv_filter.apply(A);
    //std::cout<<cv::norm(control_signal,cv::NORM_L2)<<std::endl;
 }
