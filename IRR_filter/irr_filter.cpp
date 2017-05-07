@@ -17,9 +17,9 @@ IRR_filter::IRR_filter(Mat image,double error):
         float* L_v_row = L_v.ptr<float>(y);
         float* L_row = L.ptr<float>(y);
 
-        const short* image_row1=image.ptr<short>(y-1);
-        const short* image_row2=image.ptr<short>(y);
-        const short* image_row3=image.ptr<short>(y+1);
+        const uchar* image_row1=image.ptr<uchar>(y-1);
+        const uchar* image_row2=image.ptr<uchar>(y);
+        const uchar* image_row3=image.ptr<uchar>(y+1);
         for(int x=1;x<image.cols-1;x++)
         {
                 L_v_row[x]=std::max(fabs(image_row1[x]-image_row2[x]), fabs(image_row3[x]-image_row2[x]));
@@ -73,8 +73,8 @@ void IRR_filter::minimaze_energi_fun()
 
         for(int y=begin;y<U_min.rows-1;y++)
         {
-            const short* B_row = B.ptr<short>(y);
-            const short* image_row = image.ptr<short>(y);
+            const uchar* B_row = B.ptr<uchar>(y);
+            const uchar* image_row = image.ptr<uchar>(y);
             const float* U_n_row = U_n.ptr<float>(y);
             const float* L_h_row_y = L_h.ptr<float>(y);
             const float* L_h_row_y_1 = L_h.ptr<float>(y+1);
@@ -109,14 +109,11 @@ void IRR_filter::compute_error()
     {
         auto error_row = error.ptr<float>(y);
         auto error_abs_row =error_abs.ptr<float>(y);
-        const short* image_row = image.ptr<short>(y);
+        const uchar* image_row = image.ptr<uchar>(y);
         const float* U_min_row = U_min.ptr<float>(y);
         for(int x=0;x<image.cols;x++)
         {
             double error=U_min_row[x]-image_row[x];
-            ///todo: why nan?
-            if(std::isnan(error))
-                error=0;
             error_abs_row[x]=std::fabs(error);
             error_row[x]=error;
             sigma+=error;
@@ -170,7 +167,7 @@ void IRR_filter::updateEdge()
 {
     for(int y=0;y<image.rows;y++)
     {
-        short* edge_row = edge.ptr<short>(y);
+        uchar* edge_row = edge.ptr<uchar>(y);
         const float* zce_row = zce.ptr<float>(y);
         const float* control_signal_row = control_signal.ptr<float>(y);
         for(int x=0;x<image.cols;x++)
@@ -178,7 +175,7 @@ void IRR_filter::updateEdge()
          //   std::cout<<x<<'|'<<y<<"|cs:"<<control_signal_row[x]<<std::endl;
             if(edge_row[x]==0  && zce_row[x]>0  && control_signal_row[x]>1000)
             {
-                edge_row[x]=static_cast<short>(zce_row[x]);
+                edge_row[x]=static_cast<uchar>(zce_row[x]);
             }
 
         }

@@ -2,39 +2,15 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include "opencv2/photo/photo.hpp"
-//void getContours(cv::Mat src,int type)
-//{
-//    switch (type)
-//     {
-//     case 0:
-//     {
-//        IRR_filter irr(image,error);
-//        dest=irr.proc();
-
-//     break;
-//     }
-//     case 1:
-//     {
-//        IRR_filter irr(image,error);
-//        dest=irr.proc();
-
-//     break;
-//     }
-//     default:
-//     {
-//        std::cout<<" wrong procType"<<std::endl;
-//     }
-//     }
-//}
 
 int main()
 {   std::string out="/home/skutukov/Pictures/segment/";
-    cv::Mat src = cv::imread("/home/skutukov/Pictures/filter/1/1.jpg");
+    cv::Mat src = cv::imread("/home/skutukov/Pictures/wheel/4/IMG0.png");
     if (!src.data)
     {
         return -1;
     }
-    cv::fastNlMeansDenoising(src, src, 15);
+    cv::fastNlMeansDenoising(src, src, 10);
 //    cv::imwrite(out+"src.jpg",src);
 //    // Create binary image from source image
 //    cv::Mat bw;
@@ -58,7 +34,7 @@ int main()
 
 //    // Create the CV_8U version of the distance image
 //    // It is needed for cv::findContours()
-    cv::Canny(src, dist, 35, 95, 3);
+    cv::Canny(src, dist, 35, 110, 3);
     cv::Mat dist_8u;
     dist.convertTo(dist_8u, CV_8U);
 
@@ -108,5 +84,18 @@ int main()
     }
    cv::imwrite(out+"dst.jpg", dst);
 
-    return 0;
+
+   cv::findContours(dist_8u, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+   ncomp = (int) contours.size();
+
+   // Create the marker image for the watershed algorithm
+   markers = cv::Mat::zeros(dist.size(), CV_32SC1);
+
+   // Draw the foreground markers
+   for (int i = 0; i < ncomp; i++)
+   {
+       cv::drawContours(markers, contours, i, cv::Scalar::all(i+1), -1);
+   }
+   cv::imwrite(out+"contours_res.jpg", markers*10000);
+   return 0;
 }

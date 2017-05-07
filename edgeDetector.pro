@@ -5,5 +5,6 @@ SUBDIRS += \
     IRR_filter \
     edgeDetectorTest \
     Segmentation \
-    Segmentation_krackal
+    Segmentation_krackal \
+    KuwaharaFilter
 

@@ -1,6 +1,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/photo/photo.hpp"
 #include "vector"
 #include "iostream"
 using namespace cv;
@@ -27,7 +28,7 @@ vector<vector<int>> nodes;
 
 vector<vector<vector<A>>> edg;
 cv::Vec3b color;
-void dfs(int i,int j,vector<vector<bool>>& used)
+void dfs(int& i,int& j,vector<vector<bool>>& used)
 {
         used[i][j]=true;
         for(int k=0;k<edg[i][j].size();k++)
@@ -47,12 +48,16 @@ void dfs(int i,int j,vector<vector<bool>>& used)
 int main(int argc, char *argv[])
 {
 
-    Mat src=imread("./2.jpg",0);
+    Mat src=imread("/home/skutukov/test/beach.png",0);
+    Rect ROI(0,0,20,20);
+    //src=src(ROI);
     if(!src.data)
     {
         return -1;
     }
-    cv::resize(src,src,Size(300,300));
+
+    //cv::fastNlMeansDenoising(src, src, 2);
+    //cv::resize(src,src,Size(300,300));
     //cvtColor(src, src, CV_BGR2GRAY);
     res=Mat(src.size(),CV_8UC3);
     ///-------------------------------------------
@@ -74,7 +79,7 @@ int main(int argc, char *argv[])
     }
 
     ///--------------------------------------------------
-    int thr=10;
+    int thr=7;
     for(int i=0;i<src.rows;i++)
     {
         for(int j=0;j<src.cols;j++)
@@ -97,7 +102,7 @@ int main(int argc, char *argv[])
                 }
             }
     }
-    std::cout<<edg[1][0].size()<<std::endl;
+
     for(int i=0;i<src.rows;i++)
     {
         for(int j=0;j<src.cols;j++)
@@ -113,8 +118,7 @@ int main(int argc, char *argv[])
 
         }
     }
-//   cv::imshow("test",res);
-//   cv::waitKey(0);
+
 
     cv::imwrite("./res.jpg",res);
 

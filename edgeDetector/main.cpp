@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     auto func = [] (double error)
     {
 
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/sources/1.jpg",CV_LOAD_IMAGE_ANYDEPTH);
-        cv::Mat dest=procesing(image,35,90,IRR,error,18);
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/wheel/4/IMG0.png",CV_LOAD_IMAGE_ANYDEPTH);
+        cv::Mat dest=procesing(image,35,90,CANNY,error, 6 );
         //cv::imshow("test",dest);
         //cv::waitKey(0);
 //        std::vector<vector<cv::Point> > contours;
@@ -49,15 +49,15 @@ int main(int argc, char *argv[])
 //             cv::drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
 //           }
 //        dest=drawing
-        cv::imwrite("./result/1.jpg",dest);
+        cv::imwrite("./result/res.jpg",dest);
      };
     double error(0.1);
 //    ///for(int i=0;i<5;i++)
 //    //{
 //
-//    func(error);
+    func(error);
 //    //}
-     main_proc(argc,argv);
+//     main_proc(argc,argv);
 }
 
 /**

@@ -3,7 +3,7 @@ QT -= gui
 
 CONFIG += c++11
 
-TARGET = Segmentation_krackal
+TARGET = KuwaharaFilter
 CONFIG += console
 CONFIG -= app_bundle
 
@@ -22,9 +22,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+
 LIBS += -L/usr/local/lib \
 -lopencv_core \
+-lopencv_imgproc \
 -lopencv_highgui \
 -lopencv_imgcodecs \
--lopencv_imgproc \
+-ltbb \
 -lopencv_photo \
