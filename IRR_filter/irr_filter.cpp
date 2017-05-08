@@ -4,10 +4,17 @@
 IRR_filter::IRR_filter(Mat image,double error):
     conv_filter(),eps(error)
 {
-    CV_Assert(image.type()==CV_8UC1);
+    //CV_Assert(image.type()==CV_8UC1);
     B=Mat::ones(image.size(),CV_8UC1);
     U_min=cv::Mat::zeros(image.size(),CV_32FC1);
+    ///-----------------------------------------------
     this->image=image.clone();
+    //this->image.convertTo(this->image,CV_8UC3);
+
+    cv::cvtColor( this->image, this->image, cv::COLOR_BGR2GRAY,1);
+    //std::cout<<this->image.channels()<<std::endl;
+    //this->image.convertTo(this->image,CV_16SC1);
+    ///------------------------------------------------
     L_h=Mat::ones(image.size(),CV_32FC1);
     L_v=Mat::ones(image.size(),CV_32FC1);
     L=Mat::ones(image.size(),CV_32FC1);
@@ -33,10 +40,11 @@ IRR_filter::IRR_filter(Mat image,double error):
 
 Mat IRR_filter::proc()
 {
+    //edge=Mat::zeros(image.size(), CV_8U);
     edge=Mat::zeros(image.size(), CV_16SC1);
     double dL=2*eps;
     int i=0;
-    while(dL>eps && i<5)
+    while(dL>eps && i<20)
     {
         ///2)-----------------mimimaze energi functional -------------------------
         minimaze_energi_fun();
@@ -56,7 +64,6 @@ Mat IRR_filter::proc()
         i++;
 
     }
-    edge.convertTo(edge,CV_8UC1);
     return edge;
 }
 #include <iostream>
@@ -90,14 +97,14 @@ void IRR_filter::minimaze_energi_fun()
                 }
         }
    //     dU1=dU;
-        dU=avarege_error(U_min,U_n);
+        dU=cv::norm(U_min-U_n);
   //      ddU=std::fabs(dU1-dU);
   //      std::cout<<i<<"|dU: "<<dU<<" ddU:"<<ddU<<' '<<eps<<' '<<(ddU>eps)<<std::endl;
         U_n=U_min.clone();
 
         i++;
     }
-    std::cout<<i<<"|dU:"<<dU<<std::endl;
+    //std::cout<<i<<"|dU:"<<dU<<std::endl;
     std::cout<<i<<std::endl;
 }
 void IRR_filter::compute_error()
@@ -120,10 +127,10 @@ void IRR_filter::compute_error()
         }
     }
     sigma/=(image.rows+1)*(image.cols+1);
-    std::cout<<"error abs"<<std::endl;
-    std::cout<<cv::norm(error_abs)<<std::endl;
-    std::cout<<"error"<<std::endl;
-    std::cout<<cv::norm(error_abs)<<std::endl;
+//    std::cout<<"error abs"<<std::endl;
+//    std::cout<<cv::norm(error_abs)<<std::endl;
+//    std::cout<<"error"<<std::endl;
+//    std::cout<<cv::norm(error_abs)<<std::endl;
 
 }
 
@@ -167,13 +174,13 @@ void IRR_filter::updateEdge()
 {
     for(int y=0;y<image.rows;y++)
     {
-        short* edge_row = edge.ptr<short>(y);
+        int* edge_row = edge.ptr<int>(y);
         const float* zce_row = zce.ptr<float>(y);
         const float* control_signal_row = control_signal.ptr<float>(y);
         for(int x=0;x<image.cols;x++)
         {
          //   std::cout<<x<<'|'<<y<<"|cs:"<<control_signal_row[x]<<std::endl;
-            if(edge_row[x]==0  && zce_row[x]>0  && control_signal_row[x]>1000)
+            if(edge_row[x]==0  && zce_row[x]>0  && control_signal_row[x]>2000)
             {
                 edge_row[x]=static_cast<short>(zce_row[x]);
             }

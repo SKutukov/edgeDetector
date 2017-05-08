@@ -6,5 +6,6 @@ SUBDIRS += \
    # edgeDetectorTest \
     Segmentation \
     Segmentation_krackal \
-    KuwaharaFilter
+    KuwaharaFilter \
+    BZ_filter
 

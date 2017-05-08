@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     auto func = [] (double error)
     {
 
-        cv::Mat image = cv::imread("/home/skutukov/Documents/Untitled.png",CV_LOAD_IMAGE_ANYDEPTH);
-        cv::Mat dest=procesing(image,35,90,IRR,error, 6 );
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg",CV_LOAD_IMAGE_COLOR);
+        cv::Mat dest=procesing(image,35,90,IRR,error, 10 );
         //cv::imshow("test",dest);
         //cv::waitKey(0);
 //        std::vector<vector<cv::Point> > contours;
