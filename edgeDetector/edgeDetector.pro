@@ -42,3 +42,10 @@ else:unix: LIBS += -L$$OUT_PWD/../IRR_filter/ -lIRR_filter
 
 INCLUDEPATH += $$PWD/../IRR_filter
 DEPENDPATH += $$PWD/../IRR_filter
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Kuwafara_filter/release/ -lKuwafara_filter
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Kuwafara_filter/debug/ -lKuwafara_filter
+else:unix: LIBS += -L$$OUT_PWD/../Kuwafara_filter/ -lKuwafara_filter
+
+INCLUDEPATH += $$PWD/../Kuwafara_filter
+DEPENDPATH += $$PWD/../Kuwafara_filter

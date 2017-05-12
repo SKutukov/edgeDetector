@@ -11,7 +11,8 @@ enum procType{
     SOBEL,
     CANNY,
     LAPPLAS,
-    IRR
+    IRR,
+    KUWAHARA
 };
 /**
  * @brief procesing

@@ -3,7 +3,7 @@
 #include "denoize_filter.h"
 #include "iostream"
 #include "opencv2/photo/photo.hpp"
-
+#include "kuwafara_filter.h"
 cv::Mat grayImage(cv::Mat image)
 {
     std::vector<cv::Mat> channels;
@@ -63,6 +63,13 @@ cv::Mat  procesing(cv::Mat image, int threh, int threh_max, procType type, doubl
 
      break;
      }
+    case KUWAHARA:
+    {
+       Kuwahara kuw(image,5);
+       kuw.apply(dest);
+
+    break;
+    }
      default:
      {
         std::cout<<" wrong procType"<<std::endl;
