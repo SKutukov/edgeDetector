@@ -3,7 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     edgeDetector \
     IRR_filter \
-   # edgeDetectorTest \
+    edgeDetectorTest \
     Segmentation \
     Segmentation_krackal \
     KuwaharaFilter \
