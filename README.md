@@ -16,8 +16,18 @@ sudo mkdir release
 cd release
 sudo cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
 sudo make -j4
+```
+install directly
+```bash
 sudo make install
 pkg-config --modversion opencv
+```
+or create deb package
+```bash
+cpack -G DEB
+sudo dpkg -i OpenCV-3.2.0-x86_64-libs.deb 
+sudo dpkg -i OpenCV-3.2.0-x86_64-python.deb 
+sudo dpkg -i OpenCV-3.2.0-x86_64-dev.deb  
 ```
 ### install tbb
 ```bash
