@@ -1,12 +1,12 @@
 # edgeDetector  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f28b4634ee1e4e0a9cf4d766e566584c)](https://www.codacy.com/app/SKutukov/edgeDetector?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SKutukov/edgeDetector&amp;utm_campaign=Badge_Grade)
 
-## build:
+## build on Ubuntu 17.04:
 #### install opencv
 guide: [opencv 3.1](http://embedonix.com/articles/image-processing/installing-opencv-3-1-0-on-ubuntu/)
 ```bash
 sudo apt-get install build-essential
 sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff5-dev libdc1394-22-dev
 
 cd /opt
 git clone https://github.com/opencv/opencv.git
@@ -16,8 +16,18 @@ sudo mkdir release
 cd release
 sudo cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
 sudo make -j4
+```
+install directly
+```bash
 sudo make install
 pkg-config --modversion opencv
+```
+or create deb package
+```bash
+cpack -G DEB
+sudo dpkg -i OpenCV-3.2.0-x86_64-libs.deb 
+sudo dpkg -i OpenCV-3.2.0-x86_64-python.deb 
+sudo dpkg -i OpenCV-3.2.0-x86_64-dev.deb  
 ```
 ### install tbb
 ```bash
