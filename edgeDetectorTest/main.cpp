@@ -68,8 +68,8 @@ int main(int argc, char **argv)
     while (it.hasNext())
     {
         QString filename=it.next();
-        auto tmp=func(filename,"/");
-        auto ext=func(tmp,".");
+        auto tmp=func(filename, "/");
+        auto ext=func(tmp, ".");
         if(ext.toStdString()=="jpg" || ext.toStdString()=="png")
         {
             sources.push_back(filename);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
                    //----------------- procesing ---------------------------
                    cv::Mat test = cv::imread(input_dir_test.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
                    cv::Mat src = cv::imread(input_directory.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
-                   met.apply(test,src);
+                   met.apply(test, src);
 
                 }
      std::cout<<"Avarage: "<<std::endl;

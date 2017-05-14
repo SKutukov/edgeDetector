@@ -4,9 +4,9 @@
 BZ_filter::BZ_filter(cv::Mat image)
 {
     this->image=image.clone();
-    Z=cv::Mat::ones(image.size(),CV_32FC1);
+    Z=cv::Mat::ones(image.size(), CV_32FC1);
     U=image.clone();
-    S=cv::Mat::ones(image.size(),CV_32FC1);
+    S=cv::Mat::ones(image.size(), CV_32FC1);
 }
 void BZ_filter::minimaze_S()
 {
@@ -23,7 +23,7 @@ void BZ_filter::minimaze_U()
 
 cv::Mat BZ_filter::apply()
 {
-    double dU(2*eps),dZ(2*eps),dS(2*eps);
+    double dU(2*eps), dZ(2*eps), dS(2*eps);
     cv::Mat U_n=image.clone();
     cv::Mat Z_n=cv::Mat::ones(image.size(), CV_16SC1);
     cv::Mat S_n=cv::Mat::ones(image.size(), CV_16SC1);

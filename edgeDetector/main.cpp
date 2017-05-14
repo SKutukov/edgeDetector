@@ -35,7 +35,7 @@ using namespace std;
  */
 void Threshold_Demo( int, void* )
 {
-    dst=procesing(src_gray,threshold_value,threshold_max_value,CANNY,20.);
+    dst=procesing(src_gray, threshold_value, threshold_max_value, CANNY, 20.);
     cv::imshow( window_name, dst );
 
 }
@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 //    auto func = [] (double error)
 //    {
 
-//        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg",CV_LOAD_IMAGE_COLOR);
-//        cv::Mat dest=procesing(image,35,90,IRR,error, 10 );
+//        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg", CV_LOAD_IMAGE_COLOR);
+//        cv::Mat dest=procesing(image, 35, 90, IRR, error, 10 );
 //        //cv::imshow("test",dest);
 //        //cv::waitKey(0);
 //        cv::imwrite("./res.jpg",dest);
