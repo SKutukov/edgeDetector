@@ -98,8 +98,6 @@ void IRR_filter::minimaze_energi_fun()
         }
    //     dU1=dU;
         dU=cv::norm(U_min-U_n);
-  //      ddU=std::fabs(dU1-dU);
-  //      std::cout<<i<<"|dU: "<<dU<<" ddU:"<<ddU<<' '<<eps<<' '<<(ddU>eps)<<std::endl;
         U_n=U_min.clone();
 
         i++;
@@ -127,10 +125,6 @@ void IRR_filter::compute_error()
         }
     }
     sigma/=(image.rows+1)*(image.cols+1);
-//    std::cout<<"error abs"<<std::endl;
-//    std::cout<<cv::norm(error_abs)<<std::endl;
-//    std::cout<<"error"<<std::endl;
-//    std::cout<<cv::norm(error_abs)<<std::endl;
 
 }
 

@@ -5,10 +5,12 @@
 #include "opencv2/imgproc/imgproc.hpp"
 class True_false_Metric
 {
-    True_false_Metric() = delete;
 public:
-    static void apply(cv::Mat test,cv::Mat src);
-
+    True_false_Metric();
+    void apply(cv::Mat test, cv::Mat src);
+    double precision=0;
+    double recall=0;
+    double size=0;
 
 };
 

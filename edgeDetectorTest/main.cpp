@@ -10,8 +10,8 @@
 #include "true_false_metric.h"
 
 QString input_dir_test="/home/skutukov/Pictures/test";
-QString input_directory="/home/skutukov/Pictures/sources";
-std::string output_directory="/home/skutukov/Pictures/IRR/";
+QString input_directory="/home/skutukov/Pictures/CANNY";
+std::string output_directory="/home/skutukov/Pictures/CANNY/";
 
 int main(int argc, char **argv)
 {
@@ -76,19 +76,27 @@ int main(int argc, char **argv)
 
         }
     }
+    True_false_Metric met;
+  //  tbb::parallel_for (size_t(0), sources.size(), size_t(1),
+  //                  [=](size_t i)
+            for(int i=0;i<sources.size();i++)
+            {
+                   QString filename=sources[i];
+                   std::string tmp=func(filename, "/").toStdString();
+                   std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
+                   //----------------- procesing ---------------------------
+                   cv::Mat test = cv::imread(input_dir_test.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
+                   cv::Mat src = cv::imread(input_directory.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
+                   met.apply(test,src);
 
-      tbb::parallel_for (size_t(0), sources.size(), size_t(1),
-                      [=](size_t i)
-                  {
-                      QString filename=sources[i];
-                      std::string tmp=func(filename,"/").toStdString();
-                      std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
-                      //----------------- procesing ---------------------------
-                      cv::Mat test = cv::imread(input_dir_test.toStdString()+"/"+tmp,CV_LOAD_IMAGE_GRAYSCALE);
-                      cv::Mat src = cv::imread(input_directory.toStdString()+"/"+tmp,CV_LOAD_IMAGE_GRAYSCALE);
-                     True_false_Metric::apply(test,src);
+                }
+     std::cout<<"Avarage: "<<std::endl;
+     double avarage_precision=(double)met.precision/met.size;
+     double avarage_recall=(double)met.recall/met.size;
+     std::cout<<avarage_precision<<' '<<avarage_recall<<std::endl;
+     //printf("%10.2E %10.2E \n", pred, rec);
 
-                  });
+     //);
 //    ::testing::InitGoogleTest(&argc, argv);
 //    return RUN_ALL_TESTS();
 }

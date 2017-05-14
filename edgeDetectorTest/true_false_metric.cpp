@@ -1,18 +1,62 @@
 #include "true_false_metric.h"
 #include "iostream"
-void True_false_Metric::apply(cv::Mat test,cv::Mat image)
+//#include "opencv2/highgui/highgui.hpp"
+True_false_Metric::True_false_Metric()
 {
+
+}
+
+cv::Mat draw(cv::Mat& img)
+{
+    std::vector<std::vector<cv::Point> > contours;
+    std::vector<cv::Vec4i> hierarchy;
+
+    cv::findContours( img, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+    cv::Mat drawing = cv::Mat::zeros( img.size(), CV_8UC3 );
+    for( int i = 0; i< contours.size(); i++ )
+       {
+         cv::Scalar color = cv::Scalar( 255, 255, 255);
+         cv::drawContours( drawing, contours, i, color, 1, 8, hierarchy, 0, cv::Point() );
+       }
+    return drawing;
+}
+
+True_false_Metric create()
+{
+    return True_false_Metric();
+}
+
+void True_false_Metric::apply(cv::Mat test, cv::Mat image)
+{
+
     CV_Assert(test.size()==image.size());
-    int true_positive=0,false_positive=0;
-    for(int y=0;y<test.rows;y++)
+    cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
+    cv::threshold(image, image,200, 255, cv::THRESH_BINARY);
+    int tr=0;
+    for(int y=0; y<test.rows; y++)
     {
-        const short* test_row=test.ptr<short>(y);
-        const short* image_row=image.ptr<short>(y);
+        const uchar* test_row=test.ptr<uchar>(y);
         for(int x=0;x<test.cols;x++)
         {
             if(test_row[x]>0)
             {
-                if(test_row[x]-image_row[x]==0)
+                tr++;
+            }
+        }
+    }
+    test=draw(test);
+    cv::cvtColor( test, test, cv::COLOR_BGR2GRAY,1);
+    cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
+    int true_positive=0,false_positive=0;
+    for(int y=0; y<test.rows; y++)
+    {
+        const uchar* test_row=test.ptr<uchar>(y);
+        const uchar* image_row=image.ptr<uchar>(y);
+        for(int x=0;x<test.cols;x++)
+        {
+            if(image_row[x]>0)
+            {
+                if(test_row[x]>0)
                 {
                    true_positive++;
                 }else
@@ -22,5 +66,11 @@ void True_false_Metric::apply(cv::Mat test,cv::Mat image)
             }
         }
     }
-    std::cout<<true_positive<<' '<<false_positive<<std::endl;
+    std::cout<<"true positive: "<<true_positive<<std::endl;
+    std::cout<<"false positive: "<<false_positive<<std::endl;
+    std::cout<<"true: "<<tr<<std::endl;
+    std::cout<<(double)true_positive/tr<<' '<<(double)false_positive/(true_positive+false_positive)<<std::endl;
+    precision+=(double)true_positive/tr;
+    recall+=(double)false_positive/(true_positive+false_positive);
+    size++;
 }

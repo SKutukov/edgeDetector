@@ -29,36 +29,6 @@ void main_proc(int argc, char *argv[]);
 const QString STD_PATH="./sources/";
 using namespace cv;
 using namespace std;
-int main(int argc, char *argv[])
-{
-    auto func = [] (double error)
-    {
-
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg",CV_LOAD_IMAGE_COLOR);
-        cv::Mat dest=procesing(image,35,90,IRR,error, 10 );
-        //cv::imshow("test",dest);
-        //cv::waitKey(0);
-//        std::vector<vector<cv::Point> > contours;
-//        std::vector<Vec4i> hierarchy;
-//        cv::findContours( dest, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-//        /// Draw contours
-//        cv::Mat drawing = cv::Mat::zeros( dest.size(), CV_8UC3 );
-//        for( int i = 0; i< contours.size(); i++ )
-//           {
-//             cv::Scalar color = cv::Scalar( 0, 0, 255 );
-//             cv::drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
-//           }
-//        dest=drawing
-        cv::imwrite("./res.jpg",dest);
-     };
-    double error(0.1);
-//    ///for(int i=0;i<5;i++)
-//    //{
-//
-    func(error);
-//    //}
-//     main_proc(argc,argv);
-}
 
 /**
  * @brief Threshold_Demo
@@ -69,8 +39,28 @@ void Threshold_Demo( int, void* )
     cv::imshow( window_name, dst );
 
 }
-QString input_directory="/home/skutukov/Pictures/sources(copy)";
-std::string output_directory="/home/skutukov/Pictures/IRR/";
+procType type=CANNY;
+int main(int argc, char *argv[])
+{
+//    auto func = [] (double error)
+//    {
+
+//        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg",CV_LOAD_IMAGE_COLOR);
+//        cv::Mat dest=procesing(image,35,90,IRR,error, 10 );
+//        //cv::imshow("test",dest);
+//        //cv::waitKey(0);
+//        cv::imwrite("./res.jpg",dest);
+//     };
+//    double error(0.1);
+////    ///for(int i=0;i<5;i++)
+////    //{
+////
+//    func(error);
+
+     main_proc(argc,argv);
+}
+QString input_directory="/home/skutukov/Pictures/source_done";
+std::string output_directory="/home/skutukov/Pictures/CANNY/";
 void main_proc(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -172,7 +162,7 @@ void main_proc(int argc, char *argv[])
                           //----------------- procesing ---------------------------
 
                           cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
-                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,IRR);
+                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type);
                           //---------------write result -----------------------------------
                           std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                           std::string output_name=output_directory+tmp.toStdString();
