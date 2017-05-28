@@ -26,10 +26,14 @@ private:
     Mat B;
     Mat L_h;
     Mat L_v;
+    Mat zce_h;
+    Mat zce_v;
     Mat control_signal;
     Mat zce;
     Mat error;
     Mat error_abs;
+    int max_iter_U = 5000;
+    int max_iter_L =15;
     double sigma;
     double alha(float x);
     void calculateZCE();
@@ -38,6 +42,7 @@ private:
     void compute_error();
     void updateLambda();
     void updateEdge();
+    Mat draw(cv::Mat src);
 };
 
 #endif // IRR_FILTER_H

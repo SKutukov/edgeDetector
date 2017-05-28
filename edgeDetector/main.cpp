@@ -5,7 +5,7 @@
 #include <QDirIterator>
 #include <QCommandLineParser>
 #include <tbb/parallel_for.h>
-
+#include "algorithm"
 /// Global variables
 int threshold_value = 35;
 int threshold_max_value = 255;
@@ -39,28 +39,41 @@ void Threshold_Demo( int, void* )
     cv::imshow( window_name, dst );
 
 }
-procType type=CANNY;
+//Mat trac(cv::Mat src)
+//{
+//    std::vector<std::vector<cv::Point> > contours;
+//    std::vector<cv::Vec4i> hierarchy;
+//    cv::findContours( src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+
+//    /// Draw contours
+//    Mat drawing = Mat::zeros( src.size(), CV_8UC3 );
+//    for( int i = 0; i< contours.size(); i++ )
+//       {
+//         cv::Scalar color = cv::Scalar(255, 255, 255);
+//         drawContours( drawing, contours, i, color, 0.1, 8, hierarchy, 0, cv::Point() );
+//       }
+//    return drawing;
+//}
 int main(int argc, char *argv[])
 {
-//    auto func = [] (double error)
-//    {
+    auto func = [] (double error)
+    {
 
-//        cv::Mat image = cv::imread("/home/skutukov/Pictures/2247727095.jpg", CV_LOAD_IMAGE_COLOR);
-//        cv::Mat dest=procesing(image, 35, 90, IRR, error, 10 );
-//        //cv::imshow("test",dest);
-//        //cv::waitKey(0);
-//        cv::imwrite("./res.jpg",dest);
-//     };
-//    double error(0.1);
-////    ///for(int i=0;i<5;i++)
-////    //{
-////
-//    func(error);
-
-     main_proc(argc,argv);
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/toReport/src/3.jpg", CV_LOAD_IMAGE_COLOR);
+        cv::Mat dest=procesing(image, 35, 90, IRR , error, 15. ,true);
+        //cv::imshow("test",dest);
+        //cv::waitKey(0);
+        cv::imwrite("./res.jpg",dest);
+     };
+    double error =0.01;
+//
+        func(error);
+    //   main_proc(argc,argv);
 }
-QString input_directory="/home/skutukov/Pictures/source_done";
-std::string output_directory="/home/skutukov/Pictures/CANNY/";
+procType type=CANNY;
+QString input_directory="/home/skutukov/Pictures/toReport/s/r";
+std::string output_directory="/home/skutukov/Pictures/toReport/s/s/";
+double force=0;
 void main_proc(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -151,25 +164,26 @@ void main_proc(int argc, char *argv[])
 
             }
         }
-
-//      tbb::parallel_for (size_t(0), sources.size(), size_t(1),
-//                      [=](size_t i)
-        for(int i=0;i<sources.size();i++)
+      ///------------------------sort -----------------------------
+      //std::sort(sources.begin(),sources.back());
+      ///-----------------------run filter ---------------------------
+      tbb::parallel_for (size_t(0), sources.size(), size_t(1),
+                      [=](size_t i)
+  //      for(int i=0;i<sources.size();i++)
                       {
                           QString filename=sources[i];
                           auto tmp=func(filename,"/");
                           std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
                           //----------------- procesing ---------------------------
 
-                          cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_ANYDEPTH);
-                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type);
+                          cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_COLOR);
+                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,0.1,force);
                           //---------------write result -----------------------------------
                           std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                           std::string output_name=output_directory+tmp.toStdString();
                           cv::imwrite(output_name, dest);
-                      }
-        //);
-    }
+                      });
+   // }
     if(isGui)
     {
         // Load an image
@@ -202,4 +216,5 @@ void main_proc(int argc, char *argv[])
           }
         }
     }
+   }
 }

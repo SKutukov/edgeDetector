@@ -9,14 +9,14 @@
 #include <tbb/parallel_for.h>
 #include "true_false_metric.h"
 
-QString input_dir_test="/home/skutukov/Pictures/test";
-QString input_directory="/home/skutukov/Pictures/CANNY";
-std::string output_directory="/home/skutukov/Pictures/CANNY/";
+QString input_dir_test="/home/skutukov/Pictures/toReport/hv";
+QString input_directory="/home/skutukov/Pictures/toReport/MS_10_005";
+std::string output_directory="/home/skutukov/Pictures/toReport/MS";
 
 int main(int argc, char **argv)
 {
     QCoreApplication a(argc, argv);
-    QCoreApplication::setApplicationName("Edge Detector");
+    QCoreApplication::setApplicationName("Test Edge Detector");
     QCoreApplication::setApplicationVersion("0.1.0");
 
     ////-----------------prepare Command line parser —----------------------------------

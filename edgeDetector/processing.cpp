@@ -3,7 +3,7 @@
 #include "denoize_filter.h"
 #include "iostream"
 #include "opencv2/photo/photo.hpp"
-
+#include "auxiliary_function.h"
 cv::Mat grayImage(cv::Mat image)
 {
     std::vector<cv::Mat> channels;
@@ -13,9 +13,15 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-cv::Mat  procesing(cv::Mat image, int threh, int threh_max, procType type, double error,double force)
+cv::Mat  procesing(cv::Mat image, int threh, int threh_max, procType type, double error, double force,bool isEqual)
 {
     cv::Mat  dest;
+    if(isEqual)
+    {
+        image=histogram_equalization(image);
+        cv::imwrite("norm.jpg",image);
+    }
+
     if(force>0)
     {
         cv::fastNlMeansDenoising(image, image, force);
@@ -28,7 +34,7 @@ cv::Mat  procesing(cv::Mat image, int threh, int threh_max, procType type, doubl
         int scale = 1;
         int delta = 0;
         int ddepth = CV_16S;
-        cv::threshold(image, gray_image,threh, threh_max, cv::THRESH_TOZERO_INV);
+        cv::threshold(image, gray_image, threh, threh_max, cv::THRESH_TOZERO_INV);
         cv::GaussianBlur( image, image, cv::Size(3,3), 0, 0, cv::BORDER_DEFAULT );
         cv::Mat grad_x, grad_y;
         cv::Mat abs_grad_x, abs_grad_y;

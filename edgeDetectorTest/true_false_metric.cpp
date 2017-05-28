@@ -1,12 +1,12 @@
 #include "true_false_metric.h"
 #include "iostream"
-//#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/highgui/highgui.hpp"
 True_false_Metric::True_false_Metric()
 {
 
 }
 
-cv::Mat draw(cv::Mat& img)
+cv::Mat draw(cv::Mat& img,int thin)
 {
     std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
@@ -16,8 +16,9 @@ cv::Mat draw(cv::Mat& img)
     for( int i = 0; i< contours.size(); i++ )
        {
          cv::Scalar color = cv::Scalar( 255, 255, 255);
-         cv::drawContours( drawing, contours, i, color, 1, 8, hierarchy, 0, cv::Point() );
+         cv::drawContours( drawing, contours, i, color, thin, 8, hierarchy, 0, cv::Point() );
        }
+
     return drawing;
 }
 
@@ -33,20 +34,28 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
     cv::threshold(image, image,200, 255, cv::THRESH_BINARY);
     int tr=0;
-    for(int y=0; y<test.rows; y++)
+
+    cv::Mat dr=draw(test,1);
+    cv::Mat dr_U8;
+    cv::cvtColor( dr, dr_U8, cv::COLOR_BGR2GRAY,1);
+    cv::threshold(dr_U8, dr_U8,200, 255, cv::THRESH_BINARY);
+    for(int y=0; y<dr_U8.rows; y++)
     {
-        const uchar* test_row=test.ptr<uchar>(y);
-        for(int x=0;x<test.cols;x++)
+        const uchar* draw_row=dr_U8.ptr<uchar>(y);
+        for(int x=0;x<dr_U8.cols;x++)
         {
-            if(test_row[x]>0)
+            if(draw_row[x]>0)
             {
                 tr++;
             }
         }
     }
-    test=draw(test);
+    test=draw(dr_U8,7);
     cv::cvtColor( test, test, cv::COLOR_BGR2GRAY,1);
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
+
+   // cv::imshow("test",test);
+    //cv::waitKey();
     int true_positive=0,false_positive=0;
     for(int y=0; y<test.rows; y++)
     {
