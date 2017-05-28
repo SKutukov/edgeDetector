@@ -50,7 +50,7 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
             }
         }
     }
-    test=draw(dr_U8,7);
+    test=draw(dr_U8,5);
     cv::cvtColor( test, test, cv::COLOR_BGR2GRAY,1);
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
 

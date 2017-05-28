@@ -10,7 +10,7 @@
 #include "true_false_metric.h"
 
 QString input_dir_test="/home/skutukov/Pictures/toReport/hv";
-QString input_directory="/home/skutukov/Pictures/toReport/MS_10_005";
+QString input_directory="/home/skutukov/Pictures/toReport/IRR";
 std::string output_directory="/home/skutukov/Pictures/toReport/MS";
 
 int main(int argc, char **argv)

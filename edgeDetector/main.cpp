@@ -54,26 +54,27 @@ void Threshold_Demo( int, void* )
 //       }
 //    return drawing;
 //}
+double force=10;
+double err=0.01;
 int main(int argc, char *argv[])
 {
     auto func = [] (double error)
     {
 
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/toReport/src/3.jpg", CV_LOAD_IMAGE_COLOR);
-        cv::Mat dest=procesing(image, 35, 90, IRR , error, 15. ,true);
+        cv::Mat image = cv::imread("/home/skutukov/Documents/1.png", CV_LOAD_IMAGE_COLOR);
+        cv::Mat dest=procesing(image, 35, 90, IRR , error, 0. ,false);
         //cv::imshow("test",dest);
         //cv::waitKey(0);
         cv::imwrite("./res.jpg",dest);
      };
-    double error =0.01;
-//
-        func(error);
-    //   main_proc(argc,argv);
+ //
+        func(err);
+//       main_proc(argc,argv);
 }
-procType type=CANNY;
-QString input_directory="/home/skutukov/Pictures/toReport/s/r";
-std::string output_directory="/home/skutukov/Pictures/toReport/s/s/";
-double force=0;
+procType type=IRR;
+QString input_directory="/home/skutukov/Pictures/toReport/src";
+std::string output_directory="/home/skutukov/Pictures/toReport/IRR/";
+
 void main_proc(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -177,7 +178,7 @@ void main_proc(int argc, char *argv[])
                           //----------------- procesing ---------------------------
 
                           cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_COLOR);
-                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,0.1,force);
+                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,err,force);
                           //---------------write result -----------------------------------
                           std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                           std::string output_name=output_directory+tmp.toStdString();
