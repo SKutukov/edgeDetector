@@ -10,7 +10,9 @@ public:
     void apply(cv::Mat test, cv::Mat src);
     double precision=0;
     double recall=0;
+    double f=0;
     double size=0;
+    double b=0.5;
 
 };
 

@@ -26,7 +26,7 @@ void Threshold_Demo( int, void* );
 void main_proc(int argc, char *argv[]);
 
 
-const QString STD_PATH="./sources/";
+const QString STD_PATH="./sources/";    
 using namespace cv;
 using namespace std;
 
@@ -54,22 +54,22 @@ void Threshold_Demo( int, void* )
 //       }
 //    return drawing;
 //}
-double force=10;
+double force=0;
 double err=0.01;
 int main(int argc, char *argv[])
 {
     auto func = [] (double error)
     {
 
-        cv::Mat image = cv::imread("/home/skutukov/Documents/1.png", CV_LOAD_IMAGE_COLOR);
-        cv::Mat dest=procesing(image, 35, 90, IRR , error, 0. ,false);
+        cv::Mat image = cv::imread("/home/skutukov/Pictures/toReport/src/1.jpg", CV_LOAD_IMAGE_COLOR);
+        cv::Mat dest=procesing(image, 35, 90, IRR , error, 5. ,true);
         //cv::imshow("test",dest);
         //cv::waitKey(0);
         cv::imwrite("./res.jpg",dest);
      };
  //
-        func(err);
-//       main_proc(argc,argv);
+//        func(err);
+       main_proc(argc,argv);
 }
 procType type=IRR;
 QString input_directory="/home/skutukov/Pictures/toReport/src";
@@ -178,7 +178,7 @@ void main_proc(int argc, char *argv[])
                           //----------------- procesing ---------------------------
 
                           cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_COLOR);
-                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,err,force);
+                          cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,err,force,true);
                           //---------------write result -----------------------------------
                           std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                           std::string output_name=output_directory+tmp.toStdString();

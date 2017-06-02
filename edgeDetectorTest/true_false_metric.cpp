@@ -32,7 +32,7 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
 
     CV_Assert(test.size()==image.size());
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
-    cv::threshold(image, image,200, 255, cv::THRESH_BINARY);
+   // cv::threshold(image, image,200, 255, cv::THRESH_BINARY);
     int tr=0;
 
     cv::Mat dr=draw(test,1);
@@ -50,7 +50,7 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
             }
         }
     }
-    test=draw(dr_U8,5);
+    test=draw(dr_U8,3 );
     cv::cvtColor( test, test, cv::COLOR_BGR2GRAY,1);
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
 
@@ -79,7 +79,13 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
     std::cout<<"false positive: "<<false_positive<<std::endl;
     std::cout<<"true: "<<tr<<std::endl;
     std::cout<<(double)true_positive/tr<<' '<<(double)false_positive/(true_positive+false_positive)<<std::endl;
-    precision+=(double)true_positive/tr;
-    recall+=(double)false_positive/(true_positive+false_positive);
+    double precision_=(double)true_positive/tr;
+    double precision1=std::min(precision_,1.);
+    precision+=precision1;
+    double recall_=(double)false_positive/(true_positive+false_positive);
+    double recall1=std::min(recall_,1.);
+    recall+=recall1;
+    f+=(1+b*b)*precision1*(1-recall1)/(1-recall1+b*b*precision1);
+     std::cout<<"f: "<<(1+b*b)*precision1*(1-recall1)/(1-recall1+b*b*precision1)<<std::endl;
     size++;
 }

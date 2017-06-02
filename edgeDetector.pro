@@ -7,5 +7,5 @@ SUBDIRS += \
     Segmentation \
     Segmentation_krackal \
     KuwaharaFilter \
-    BZ_filter
+    BZ_filter \
 

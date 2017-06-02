@@ -32,8 +32,9 @@ private:
     Mat zce;
     Mat error;
     Mat error_abs;
+    Mat edge_32f;
     int max_iter_U = 5000;
-    int max_iter_L =15;
+    int max_iter_L =2;
     double sigma;
     double alha(float x);
     void calculateZCE();

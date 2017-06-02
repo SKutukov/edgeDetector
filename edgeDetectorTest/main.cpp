@@ -10,7 +10,7 @@
 #include "true_false_metric.h"
 
 QString input_dir_test="/home/skutukov/Pictures/toReport/hv";
-QString input_directory="/home/skutukov/Pictures/toReport/IRR";
+QString input_directory="/home/skutukov/Pictures/toReport/BIL";
 std::string output_directory="/home/skutukov/Pictures/toReport/MS";
 
 int main(int argc, char **argv)
@@ -90,12 +90,14 @@ int main(int argc, char **argv)
                    met.apply(test, src);
 
                 }
+     double b=0.5;
      std::cout<<"Avarage: "<<std::endl;
      double avarage_precision=(double)met.precision/met.size;
      double avarage_recall=(double)met.recall/met.size;
      std::cout<<avarage_precision<<' '<<avarage_recall<<std::endl;
+     std::cout<<(1+b*b)*avarage_precision*(1-avarage_recall)/(1-avarage_recall+b*b*avarage_precision)<<std::endl;
      //printf("%10.2E %10.2E \n", pred, rec);
-
+ std::cout<<met.f/met.size<<std::endl;
      //);
 //    ::testing::InitGoogleTest(&argc, argv);
 //    return RUN_ALL_TESTS();
