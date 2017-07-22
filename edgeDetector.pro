@@ -5,6 +5,5 @@ SUBDIRS += \
     IRR_filter \
     edgeDetectorTest \
     Segmentation \
-    KuwaharaFilter \
     BZ_filter \
 
