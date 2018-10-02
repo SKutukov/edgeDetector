@@ -2,7 +2,7 @@
 #define FILTERFACTORY_H
 
 #include "filter.h"
-
+#include <memory>
 /**
  * @brief The procType enum
  */
@@ -17,7 +17,7 @@ enum filterType{
 class FilterFactory
 {
 public:
-    Filter createFilter(filterType type);
+   static std::shared_ptr<Filter> createFilter(filterType type);
 private:
     FilterFactory();
 

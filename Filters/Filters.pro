@@ -22,6 +22,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+LIBS += -L/usr/local/lib \
+-lopencv_core \
+-lopencv_imgproc \
 
 unix {
     target.path = /usr/lib
@@ -30,7 +33,14 @@ unix {
 
 HEADERS += \
     filter.h \
-    filterfactory.h
+    filterfactory.h \
+    auxiliary_function.h \
+    denoize_filter.h \
+    irr_filter.h
 
 SOURCES += \
-    filterfactory.cpp
+    filterfactory.cpp \
+    filter.cpp \
+    auxiliary_function.cpp \
+    denoize_filter.cpp \
+    irr_filter.cpp

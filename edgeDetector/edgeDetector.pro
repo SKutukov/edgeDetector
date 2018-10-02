@@ -11,9 +11,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     processing.cpp \
-    filterfactory.cpp \
-    filter.cpp \
-    gui.cpp \
     consol_app.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -29,9 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     processing.h \
-    filterfactory.h \
-    filter.h \
-    gui.h \
     consol_app.h
 
 LIBS += -L/usr/local/lib \
@@ -42,14 +36,6 @@ LIBS += -L/usr/local/lib \
 -ltbb \
 -lopencv_photo \
 
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../IRR_filter/release/ -lIRR_filter
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../IRR_filter/debug/ -lIRR_filter
-else:unix: LIBS += -L$$OUT_PWD/../IRR_filter/ -lIRR_filter
-
-INCLUDEPATH += $$PWD/../IRR_filter
-DEPENDPATH += $$PWD/../IRR_filter
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Filters/release/ -lFilters
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Filters/debug/ -lFilters

@@ -33,12 +33,13 @@ LIBS += -L/usr/local/lib \
 -lopencv_highgui \
 -ltbb \
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../IRR_filter/release/ -lIRR_filter
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../IRR_filter/debug/ -lIRR_filter
-else:unix: LIBS += -L$$OUT_PWD/../IRR_filter/ -lIRR_filter
-
-INCLUDEPATH += $$PWD/../IRR_filter
-DEPENDPATH += $$PWD/../IRR_filter
 
 HEADERS += \
     true_false_metric.h
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Filters/release/ -lFilters
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Filters/debug/ -lFilters
+else:unix: LIBS += -L$$OUT_PWD/../Filters/ -lFilters
+
+INCLUDEPATH += $$PWD/../Filters
+DEPENDPATH += $$PWD/../Filters

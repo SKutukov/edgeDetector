@@ -1,22 +1,19 @@
 #include "filterfactory.h"
 
-Filter FilterFactory::createFilter(filterType type)
+std::shared_ptr<Filter> FilterFactory::createFilter(filterType type)
 {
     switch (type) {
         case SOBEL:
-            return Sobel();
-            break;
+            return  std::make_shared<Sobel>(Sobel());
         case CANNY:
-            return Canny();
-            break;
+            return std::make_shared<Canny>(Canny());
         case LAPLAS:
-            return Laplas();
-            break;
+            return std::make_shared<Laplas>(Laplas());
         case IRR_FILTER:
-            return IRR();
-            break;
+            return std::make_shared<IRR>(IRR());
+        case CONV:
+            return std::make_shared<Convolution_filter>(Convolution_filter());
     }
-
 }
 
 FilterFactory::FilterFactory()

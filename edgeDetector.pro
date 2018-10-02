@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    Filters \
     edgeDetector \
-    IRR_filter \
     edgeDetectorTest \
-    Filters
+

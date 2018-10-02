@@ -2,13 +2,14 @@
 #include <QDirIterator>
 #include <tbb/parallel_for.h>
 #include "processing.h"
+#include "iostream"
 
 consol_app::consol_app()
 {
 
 }
 
-void consol_app::run()
+void consol_app::run(const QString& input_directory, const std::string& output_directory)
 {
     QDirIterator it(input_directory, QDirIterator::NoIteratorFlags);
     std::vector<QString> sources;
@@ -37,7 +38,7 @@ void consol_app::run()
                       //----------------- procesing ---------------------------
 
                       cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_COLOR);
-                      cv::Mat dest=procesing(image,threshold_value,threshold_max_value,type,err,force,true);
+                      cv::Mat dest = procesing(image,threshold_value,threshold_max_value,type,err,force,true);
                       //---------------write result -----------------------------------
                       std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                       std::string output_name=output_directory+tmp.toStdString();

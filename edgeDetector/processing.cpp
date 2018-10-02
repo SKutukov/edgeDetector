@@ -16,12 +16,12 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-cv::Mat  procesing(cont cv::Mat& image, int threh, int threh_max,
-                   filterType type, double error, double force,bool isEqual)
+cv::Mat  procesing(cv::Mat& image, int threh, int threh_max,
+                   filterType type, double error, float force,bool isEqual)
 {
     if(isEqual)
     {
-        image=histogram_equalization(image);
+        image = histogram_equalization(image);
     }
 
     if(force>0)
@@ -29,5 +29,5 @@ cv::Mat  procesing(cont cv::Mat& image, int threh, int threh_max,
         cv::fastNlMeansDenoising(image, image, force);
     }
 
-    return FilterFactory::createFilter(type).proc(image);
+    return FilterFactory::createFilter(type)->proc(image);
 }

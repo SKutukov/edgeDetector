@@ -1,7 +1,7 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-
+#include <opencv2/core/core.hpp>
 class Filter
 {
 public:
@@ -18,6 +18,8 @@ private:
     int scale = 1;
     int delta = 0;
     int ddepth = CV_16S;
+    int threh = 0;
+    int threh_max = 256;
 };
 
 
@@ -54,7 +56,7 @@ public:
     cv::Mat proc(const cv::Mat& source);
 private:
     int kernel_size=5;
-    Mat kernel;
+    cv::Mat kernel;
     cv::Point anchor=cv::Point(-1,-1);
     int delta=0;
     int ddepth=-1;

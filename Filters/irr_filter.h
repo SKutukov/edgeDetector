@@ -4,7 +4,8 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "convolution_filter.h"
+#include "filter.h"
+
 using cv::Mat;
 
 class IRR_filter

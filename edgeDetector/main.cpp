@@ -2,19 +2,20 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QString>
 
 #include <algorithm>
-#include "gui.h"
 #include "consol_app.h"
-#include "processing.h"
 #include "filterfactory.h"
+#include "processing.h"
 
-void main_proc(int argc, char *argv[]);
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-const QString STD_PATH="./sources/";    
+int main_proc(int argc, char *argv[]);
 
-double force=0;
-double err=0.01;
 int main(int argc, char *argv[])
 {
     auto func = [] (double error)
@@ -23,10 +24,10 @@ int main(int argc, char *argv[])
         cv::Mat dest=procesing(image, 35, 90, IRR_FILTER , error, 5. ,true);
         cv::imwrite("./res.jpg",dest);
      };
-     main_proc(argc,argv);
+     return main_proc(argc,argv);
 }
 
-void main_proc(int argc, char *argv[])
+int main_proc(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("Edge Detector");
@@ -103,12 +104,9 @@ void main_proc(int argc, char *argv[])
     ///-------------- load threh and run concol mode  or run gui mode   ----------------------------------
     if(!isGui)
     {
-
-    } // end console mode
-    if(isGui)
-    {
-        GUI_app gui = GUI_app();
-        gui.run();
+        consol_app app = consol_app();
+        app.run(input_directory, output_directory);
     }
+    return 0;
 
 }
