@@ -1,7 +1,7 @@
 #include "gui.h"
 #include "processing.h"
 
-GUI::GUI()
+GUI_app::GUI_app()
 {
 
 }
@@ -14,7 +14,7 @@ void Threshold_Demo(int, void* )
     cv::imshow( window_name, dst );
 
 }
-void GUI::run(const std::string& filename)
+void GUI_app::run(const std::string& filename)
 {
     // Load an image
     src = cv::imread(input_directory.toStdString(),1);

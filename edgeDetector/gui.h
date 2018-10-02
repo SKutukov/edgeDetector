@@ -3,10 +3,10 @@
 
 #include <string>
 
-class GUI
+class GUI_app
 {
 public:
-    GUI();
+    GUI_app();
     void run();
 private:
     cv::Mat src, src_gray, dst;
