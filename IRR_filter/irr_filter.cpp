@@ -235,7 +235,6 @@ Mat IRR_filter::proc()
         compute_error();
         std::cout<<" sigma: "<< sigma<<std::endl;
         tresh=0.1*sigma;
-        //tresh=0;
         ///3.c)-----------------compute control signal  -------------------------
         calculateControlSignal();
         ///3.d)-----------------compute magnutude of zero crossing in error signal zce(x,y)  -------------------------
@@ -248,17 +247,8 @@ Mat IRR_filter::proc()
         dE=cv::norm(edge-E_old);
         std::cout<<i<<"|dE: "<<dE<<std::endl;
         cv::imwrite("IRR_"+std::to_string(i)+".jpg",edge);
-        i++;
-
-
+        ++i;
     }
-   // return trac(edge);
-//    cv::Mat s;
-//    control_signal.convertTo(s,CV_8UC1);
-//    cv::imwrite("/home/skutukov/Documents/control.jpg",control_signal);
-//    zce.convertTo(s,CV_8UC1);
-//    cv::imwrite("/home/skutukov/Documents/zce.jpg",control_signal);
-   // image.convertTo(image,CV_32FC1);
     return zce;
 }
 #include <iostream>
@@ -272,7 +262,6 @@ void IRR_filter::minimaze_energi_fun()
     int i=0;
     while(dU>eps && i<max_iter_U)
     {
-
         for(int y=begin;y<U_min.rows-1;y++)
         {
             const unsigned char* B_row = B.ptr<unsigned char>(y);
@@ -291,7 +280,6 @@ void IRR_filter::minimaze_energi_fun()
                     U_min_row1[x]=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image_row[x]-a)/T;
                 }
         }
-        //std::cout<<i<<"|dU:"<<dU<<std::endl;
         dU=cv::norm(U_min-U_n);
         U_n=U_min.clone();
 
@@ -373,9 +361,7 @@ void IRR_filter::calculateZCE()
                  zce_v=std::max(std::fabs(sht),std::fabs(shb));
                  zce_row_v[x]=zce_v;
             }
-
             zce_row[x]=std::max<float>(zce_h,zce_v);
-
         }
     }
     std::cout<<"zce:"<<cv::norm(zce)<<std::endl;

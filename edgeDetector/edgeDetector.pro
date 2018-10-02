@@ -10,7 +10,11 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    processing.cpp
+    processing.cpp \
+    filterfactory.cpp \
+    filter.cpp \
+    gui.cpp \
+    consol_app.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -24,7 +28,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    processing.h
+    processing.h \
+    filterfactory.h \
+    filter.h \
+    gui.h \
+    consol_app.h
 
 LIBS += -L/usr/local/lib \
 -lopencv_core \
@@ -42,3 +50,10 @@ else:unix: LIBS += -L$$OUT_PWD/../IRR_filter/ -lIRR_filter
 
 INCLUDEPATH += $$PWD/../IRR_filter
 DEPENDPATH += $$PWD/../IRR_filter
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Filters/release/ -lFilters
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Filters/debug/ -lFilters
+else:unix: LIBS += -L$$OUT_PWD/../Filters/ -lFilters
+
+INCLUDEPATH += $$PWD/../Filters
+DEPENDPATH += $$PWD/../Filters
