@@ -1,19 +1,15 @@
 #include "irr_filter.h"
 #include "auxiliary_function.h"
 #include <iostream>
-IRR_filter::IRR_filter(Mat image, double error):
+IRR_filter_Imlementation::IRR_filter_Imlementation(Mat image, double error):
     conv_filter(),eps(error)
 {
-    //CV_Assert(image.type()==CV_8UC1);
     B=Mat::ones(image.size(), CV_8UC1);
     U_min=cv::Mat::zeros(image.size(), CV_32FC1);
     ///-----------------------------------------------
     this->image=image.clone();
-    //this->image.convertTo(this->image,CV_8UC3);
 
     cv::cvtColor( this->image, this->image, cv::COLOR_BGR2GRAY,1);
-    //std::cout<<this->image.channels()<<std::endl;
-    //this->image.convertTo(this->image,CV_16SC1);
     ///------------------------------------------------
     L_h=Mat::ones(image.size(),CV_32FC1);
     L_v=Mat::ones(image.size(),CV_32FC1);
@@ -21,208 +17,26 @@ IRR_filter::IRR_filter(Mat image, double error):
     L_h.setTo(cv::Scalar(100.));
     L_v.setTo(cv::Scalar(100.));
 
-
-//    int scale = 1;
-//    int delta = 0;
-//    int ddepth = CV_32FC1;
-
-//    cv::Sobel( this->image, L_h, ddepth, 1, 0, 3, scale, delta, cv::BORDER_DEFAULT );
-//    cv::convertScaleAbs( L_h, L_h );
-//    /// Gradient Y
-//    cv::Sobel(  this->image, L_v, ddepth, 0, 1, 3, scale, delta, cv::BORDER_DEFAULT );
-//    cv::convertScaleAbs( L_v, L_v );
-
-//    for(int y=1;y<image.rows-1;y++)
-//    {
-//        float* L_h_row = L_h.ptr<float>(y);
-//        float* L_v_row = L_v.ptr<float>(y);
-//        float* L_row = L.ptr<float>(y);
-
-//        const short* image_row1=image.ptr<short>(y-1);
-//        const short* image_row2=image.ptr<short>(y);
-//        const short* image_row3=image.ptr<short>(y+1);
-//        for(int x=1;x<image.cols-1;x++)
-//        {
-//                L_v_row[x]=std::max(fabs(image_row1[x]-image_row2[x]), fabs(image_row3[x]-image_row2[x]));
-//                L_h_row[x]=std::max(fabs(image_row2[x]-image_row2[x-1]), fabs(image_row2[x]-image_row2[x+1]));
-//                L_row[x]=std::max(L_h_row[x], L_v_row[x]);
-//        }
-//    }
-
 }
-
-Mat IRR_filter::draw(cv::Mat src)
-{
-    Mat dst(src.size(),CV_16SC1);
-    int aperture_size = 3;
-    const int cn = 1;
-
-    int low=2500;
-    int high=3000;
-    ptrdiff_t mapstep = src.cols + 2;
-    cv::AutoBuffer<float> buffer((src.cols+2)*(src.rows+2) + cn * mapstep * 3 * sizeof(int));
-
-    float* mag_buf[3];
-    mag_buf[0] = (float*)(float*)buffer;
-    mag_buf[1] = mag_buf[0] + mapstep*cn;
-    mag_buf[2] = mag_buf[1] + mapstep*cn;
-    memset(mag_buf[0], 0, /* cn* */mapstep*sizeof(int));
-
-    int* map = (int*)(mag_buf[2] + mapstep*cn);
-    memset(map, 1, mapstep);
-    memset(map + mapstep*(src.rows + 1), 1, mapstep);
-
-    int maxsize = std::max(1 << 10, src.cols * src.rows / 10);
-    std::vector<int*> stack(maxsize);
-    int **stack_top = &stack[0];
-    int **stack_bottom = &stack[0];
-
-    /* sector numbers
-       (Top-Left Origin)
-
-        1   2   3
-         *  *  *
-          * * *
-        0*******0
-          * * *
-         *  *  *
-        3   2   1
-    */
-
-    #define CANNY_PUSH(d)    *(d) = uchar(2), *stack_top++ = (d)
-    #define CANNY_POP(d)     (d) = *--stack_top
-
-    // calculate magnitude and angle of gradient, perform non-maxima suppression.
-    // fill the map with one of the following values:
-    //   0 - the pixel might belong to an edge
-    //   1 - the pixel can not belong to an edge
-    //   2 - the pixel does belong to an edge
-    for (int i = 0; i <= src.rows; i++)
-    {
-        float* _norm = mag_buf[(i > 0) + 1] + 1;
-        float* control_signal_row= control_signal.ptr<float>(i);
-        if (i < src.rows)
-        {
-            for (int j = 0; j < src.cols*cn; j++)
-            {
-                _norm[j] = control_signal_row[j];
-            }
-
-            _norm[-1] = _norm[src.cols] = 0;
-        }
-        else
-            memset(_norm-1, 0, /* cn* */mapstep*sizeof(int));
-
-        // at the very beginning we do not have a complete ring
-        // buffer of 3 magnitude rows for non-maxima suppression
-        if (i == 0)
-            continue;
-
-        int* _map = map + mapstep*i + 1;
-        _map[-1] = _map[src.cols] = 1;
-
-        float* _mag = mag_buf[1] + 1; // take the central row
-
-        if ((stack_top - stack_bottom) + src.cols > maxsize)
-        {
-            int sz = (int)(stack_top - stack_bottom);
-            maxsize = maxsize * 3/2;
-            stack.resize(maxsize);
-            stack_bottom = &stack[0];
-            stack_top = stack_bottom + sz;
-        }
-
-        int prev_flag = 0;
-        for (int j = 0; j < src.cols; j++)
-        {
-            int m = _mag[j];
-
-            if (m > low)
-            {
-                goto __ocv_canny_push;
-
-            }
-            prev_flag = 0;
-            _map[j] = int(1);
-            continue;
-__ocv_canny_push:
-            if (!prev_flag && m > high && _map[j-mapstep] != 2)
-            {
-                CANNY_PUSH(_map + j);
-                prev_flag = 1;
-            }
-            else
-                _map[j] = 0;
-        }
-
-        // scroll the ring buffer
-        _mag = mag_buf[0];
-        mag_buf[0] = mag_buf[1];
-        mag_buf[1] = mag_buf[2];
-        mag_buf[2] = _mag;
-    }
-
-    // now track the edges (hysteresis thresholding)
-    while (stack_top > stack_bottom)
-    {
-        int* m;
-        if ((stack_top - stack_bottom) + 8 > maxsize)
-        {
-            int sz = (int)(stack_top - stack_bottom);
-            maxsize = maxsize * 3/2;
-            stack.resize(maxsize);
-            stack_bottom = &stack[0];
-            stack_top = stack_bottom + sz;
-        }
-
-        CANNY_POP(m);
-
-        if (!m[-1])         CANNY_PUSH(m - 1);
-        if (!m[1])          CANNY_PUSH(m + 1);
-        if (!m[-mapstep-1]) CANNY_PUSH(m - mapstep - 1);
-        if (!m[-mapstep])   CANNY_PUSH(m - mapstep);
-        if (!m[-mapstep+1]) CANNY_PUSH(m - mapstep + 1);
-        if (!m[mapstep-1])  CANNY_PUSH(m + mapstep - 1);
-        if (!m[mapstep])    CANNY_PUSH(m + mapstep);
-        if (!m[mapstep+1])  CANNY_PUSH(m + mapstep + 1);
-    }
-
-    // the final pass, form the final image
-    const int* pmap = map + mapstep + 1;
-
-    for (int i = 0; i < src.rows; i++, pmap += mapstep)
-    {
-        int* pdst = dst.ptr<int>(i);
-        for (int j = 0; j < src.cols; j++)
-        {
-            pdst[j] = (int)-(pmap[j] >> 1);
-        }
-    }
-    return dst;
-}
-
 #include "iostream"
 Mat trac(cv::Mat src)
 {
     src.convertTo(src,CV_8UC1);
-//    std::cout<<src.type()<<std::endl;
-//    std::vector<std::vector<cv::Point> > contours;
-//    std::vector<cv::Vec4i> hierarchy;
-//    cv::findContours( src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
+    std::vector<std::vector<cv::Point> > contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours( src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
-//    /// Draw contours
-//    Mat drawing = Mat::zeros( src.size(), CV_8UC3 );
-//    for( int i = 0; i< contours.size(); i++ )
-//       {
-//         cv::Scalar color = cv::Scalar(255, 255, 255);
-//         drawContours( drawing, contours, i, color, 1, 8, hierarchy, 0, cv::Point() );
-//       }
-    cv::Canny(src,src,0,1000);
+    /// Draw contours
+    Mat drawing = Mat::zeros( src.size(), CV_8UC3 );
+    for( size_t i = 0; i< contours.size(); i++ )
+    {
+         cv::Scalar color = cv::Scalar(255, 255, 255);
+         drawContours( drawing, contours, i, color, 1, 8, hierarchy, 0, cv::Point() );
+    }
     return src;
 }
 
-#include "opencv2/highgui/highgui.hpp"
-Mat IRR_filter::proc()
+Mat IRR_filter_Imlementation::proc()
 {
     edge=Mat::zeros(image.size(), CV_16SC1);
     double dE=2*eps;
@@ -246,13 +60,12 @@ Mat IRR_filter::proc()
         updateLambda();
         dE=cv::norm(edge-E_old);
         std::cout<<i<<"|dE: "<<dE<<std::endl;
-        cv::imwrite("IRR_"+std::to_string(i)+".jpg",edge);
         ++i;
     }
     return zce;
 }
-#include <iostream>
-void IRR_filter::minimaze_energi_fun()
+
+void IRR_filter_Imlementation::minimaze_energi_fun()
 {
     Mat U_n=Mat::zeros(image.size(), CV_32FC1);
     int begin=1;
@@ -288,7 +101,7 @@ void IRR_filter::minimaze_energi_fun()
     std::cout<<i<<"|dU:"<<dU<<std::endl;
     std::cout<<"energi:"<<cv::norm(U_min)<<std::endl;
 }
-void IRR_filter::compute_error()
+void IRR_filter_Imlementation::compute_error()
 {
     Mat image_32f;
     image.convertTo(image_32f,CV_32FC1);
@@ -302,10 +115,7 @@ void IRR_filter::compute_error()
 
         for(int x=0;x<image.cols;x++)
         {
-            double error=error_abs_row[x];
-           // error_abs_row[x]=std::fabs(error);
-           // error_row[x]=error;
-           // std::cout<<"error_abs: "<<std::fabs(error)<<std::endl;
+            double error = error_abs_row[x];
             sigma+=error*error;
         }
     }
@@ -315,20 +125,13 @@ void IRR_filter::compute_error()
 
 }
 
-void IRR_filter::calculateControlSignal()
+void IRR_filter_Imlementation::calculateControlSignal()
 {
-   //std::cout<<cv::norm(error_abs,cv::NORM_L2)<<std::endl;
-   // cv::Mat A=conv_filter.apply(error_abs);
-  //  cv::subtract(A, cv::Scalar(sigma), A);
-  //  control_signal=conv_filter.apply(A);
-  //  control_signal=conv_filter.apply(error_abs);
-
    cv::GaussianBlur( error_abs, control_signal, cv::Size(3,3), 0, 0, cv::BORDER_DEFAULT );
    cv::subtract(control_signal, cv::Scalar(sigma), control_signal);
    cv::GaussianBlur( control_signal, control_signal, cv::Size(25,25), 0, 0, cv::BORDER_DEFAULT );
-  // std::cout<<cv::norm(control_signal,cv::NORM_L2)<<std::endl;
 }
-void IRR_filter::calculateZCE()
+void IRR_filter_Imlementation::calculateZCE()
 {
     zce=Mat::zeros(image.size(), CV_32F);
     zce_h=Mat::zeros(image.size(), CV_32F);
@@ -366,39 +169,36 @@ void IRR_filter::calculateZCE()
     }
     std::cout<<"zce:"<<cv::norm(zce)<<std::endl;
 }
-void IRR_filter::updateEdge()
+void IRR_filter_Imlementation::updateEdge()
 {
      Mat control_signal_u8c1;
      control_signal.convertTo(control_signal_u8c1,CV_8UC1);
      edge_32f=Mat::zeros(image.size(), CV_32FC1);
      cv::add(zce,cv::Scalar(0),edge_32f,control_signal_u8c1);
 
-//    for(int y=0; y<image.rows; y++)
-//    {
-//        float* edge_row = edge_32f.ptr<float>(y);
-//        const float* zce_row = zce.ptr<float>(y);
-//        const float* control_signal_row = control_signal.ptr<float>(y);
-//        for(int x=0; x<image.cols; x++)
-//        {
-//            //std::cout<<x<<'|'<<y<<"|cs:"<<zce_row[x]<<std::endl;
-//            //if(edge_row[x]==0  && zce_row[x]>tresh  && control_signal_row[x]>0)
-//            if( control_signal_row[x]>0)
-//            {
-//            //  if(edge_row[x]==0)
-//                edge_row[x]=zce_row[x];
-//            }
+    for(int y=0; y<image.rows; y++)
+    {
+        float* edge_row = edge_32f.ptr<float>(y);
+        const float* zce_row = zce.ptr<float>(y);
+        const float* control_signal_row = control_signal.ptr<float>(y);
+        for(int x=0; x<image.cols; x++)
+        {
+            if( control_signal_row[x]>0)
+            {
+                edge_row[x]=zce_row[x];
+            }
 
-//        }
-//    }
-//    edge_32f.convertTo(edge,CV_16SC1);
+        }
+    }
+    edge_32f.convertTo(edge,CV_16SC1);
 }
-double IRR_filter::alha(float x)
+double IRR_filter_Imlementation::alha(float x)
 {
     double exp=std::exp(-x/V_t);
     return l_min*(1-exp)+x*(exp);
 }
 
-void IRR_filter::updateLambda()
+void IRR_filter_Imlementation::updateLambda()
 {
     for(int y=0;y<L.rows;y++)
     {
@@ -410,7 +210,7 @@ void IRR_filter::updateLambda()
         for(int x=0;x<L.cols;x++)
         {
            // if(control_signal_row[x]>0 && zce_row[x]>tresh && L_row[x]>l_min )
-                if(L_row[x]>l_min )
+            if(L_row[x]>l_min )
             {
                 L_v_row[x]=alha(L_v_row[x]);
                 L_h_row[x]=alha(L_h_row[x]);

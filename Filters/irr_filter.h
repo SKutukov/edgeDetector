@@ -8,10 +8,10 @@
 
 using cv::Mat;
 
-class IRR_filter
+class IRR_filter_Imlementation
 {
 public:
-    IRR_filter(Mat image,double error=0.01);
+    IRR_filter_Imlementation(Mat image,double error=0.01);
     Mat proc();
 private:
     Convolution_filter conv_filter;

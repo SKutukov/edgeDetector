@@ -47,7 +47,7 @@ cv::Mat Laplas::proc(const cv::Mat &source)
 
 cv::Mat IRR::proc(const cv::Mat &source)
 {
-    IRR_filter irr(source,error);
+    IRR_filter_Imlementation irr(source,error);
     return irr.proc();
 }
 
