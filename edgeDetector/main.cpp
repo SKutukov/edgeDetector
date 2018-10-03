@@ -18,12 +18,12 @@ int main_proc(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-    auto func = [] (double error)
-    {
-        cv::Mat image = cv::imread("/home/skutukov/Pictures/toReport/src/1.jpg", CV_LOAD_IMAGE_COLOR);
-        cv::Mat dest=procesing(image, 35, 90, IRR_FILTER , error, 5. ,true);
-        cv::imwrite("./res.jpg",dest);
-     };
+//    auto func = [] (double error)
+//    {
+//        cv::Mat image = cv::imread("/home/skutukov/Pictures/toReport/src/1.jpg", CV_LOAD_IMAGE_COLOR);
+//        cv::Mat dest=procesing(image, 35, 90, IRR_FILTER , error, 5. ,true);
+//        cv::imwrite("./res.jpg",dest);
+//     };
      return main_proc(argc,argv);
 }
 
@@ -42,7 +42,7 @@ int main_proc(int argc, char *argv[])
 
     QString input_directory="/home/skutukov/Pictures/toReport/src";
     std::string output_directory="/home/skutukov/Pictures/toReport/IRR/";
-    int threshold_value, threshold_max_value;
+    int threshold_value = 0, threshold_max_value = 256;
 
     QCommandLineOption inputs_dir(QStringList() <<"i" << "inputs_dir",
                 QCoreApplication::translate("main", "Directory of source images"),
@@ -104,7 +104,7 @@ int main_proc(int argc, char *argv[])
     ///-------------- load threh and run concol mode  or run gui mode   ----------------------------------
     if(!isGui)
     {
-        consol_app app = consol_app();
+        consol_app app = consol_app(threshold_value, threshold_max_value);
         app.run(input_directory, output_directory);
     }
     return 0;

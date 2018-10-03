@@ -6,7 +6,7 @@
 class consol_app
 {
 public:
-    consol_app();
+    consol_app(int threshold_value, int threshold_max_value);
     void run(const QString& input_directory, const std::string& output_directory);
 private:
     int threshold_value,threshold_max_value;

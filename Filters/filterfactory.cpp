@@ -12,7 +12,7 @@ std::shared_ptr<Filter> FilterFactory::createFilter(filterType type)
         case IRR_FILTER:
             return std::make_shared<IRR>(IRR());
         case CONV:
-            return std::make_shared<Convolution_filter>(Convolution_filter());
+            return std::make_shared<ConvolutionFilter>(ConvolutionFilter());
     }
 }
 

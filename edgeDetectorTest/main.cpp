@@ -8,13 +8,14 @@
 #include "iostream"
 #include <tbb/parallel_for.h>
 #include "true_false_metric.h"
-
-QString input_dir_test="/home/skutukov/Pictures/toReport/hv";
-QString input_directory="/home/skutukov/Pictures/toReport/BIL";
-std::string output_directory="/home/skutukov/Pictures/toReport/MS";
+#include <memory>
 
 int main(int argc, char **argv)
 {
+    QString input_dir_test="/home/skutukov/Pictures/toReport/hv";
+    QString input_directory="/home/skutukov/Pictures/toReport/BIL";
+    std::string output_directory="/home/skutukov/Pictures/toReport/MS";
+
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("Test Edge Detector");
     QCoreApplication::setApplicationVersion("0.1.0");
@@ -76,7 +77,7 @@ int main(int argc, char **argv)
 
         }
     }
-    True_false_Metric met;
+    static std::shared_ptr<True_false_Metric> met;
     tbb::parallel_for (size_t(0), sources.size(), size_t(1),
                     [=](size_t i)
             {
@@ -86,16 +87,15 @@ int main(int argc, char **argv)
                    //----------------- procesing ---------------------------
                    cv::Mat test = cv::imread(input_dir_test.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
                    cv::Mat src = cv::imread(input_directory.toStdString()+"/"+tmp, CV_LOAD_IMAGE_GRAYSCALE);
-                   met.apply(test, src);
+                   met->apply(test, src);
 
                 });
      double b=0.5;
      std::cout<<"Avarage: "<<std::endl;
-     double avarage_precision=(double)met.precision/met.size;
-     double avarage_recall=(double)met.recall/met.size;
+     double avarage_precision=static_cast<double>(met->precision)/met->size;
+     double avarage_recall=static_cast<double>(met->recall)/met->size;
      std::cout<<avarage_precision<<' '<<avarage_recall<<std::endl;
      std::cout<<(1+b*b)*avarage_precision*(1-avarage_recall)/(1-avarage_recall+b*b*avarage_precision)<<std::endl;
-     //printf("%10.2E %10.2E \n", pred, rec);
-     std::cout<<met.f/met.size<<std::endl;
+     std::cout<<met->f/met->size<<std::endl;
 
 }

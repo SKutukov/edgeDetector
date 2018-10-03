@@ -16,8 +16,8 @@ cv::Mat grayImage(cv::Mat image)
     return channels[0];
 }
 
-cv::Mat  procesing(cv::Mat& image, int threh, int threh_max,
-                   filterType type, double error, float force,bool isEqual)
+cv::Mat  procesing(cv::Mat& image,const int threh,const int threh_max,
+                   const filterType type,const float force,const bool isEqual)
 {
     if(isEqual)
     {
@@ -29,5 +29,5 @@ cv::Mat  procesing(cv::Mat& image, int threh, int threh_max,
         cv::fastNlMeansDenoising(image, image, force);
     }
 
-    return FilterFactory::createFilter(type)->proc(image);
+    return FilterFactory::createFilter(type)->proc(image, threh, threh_max);
 }

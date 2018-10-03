@@ -22,7 +22,7 @@ IRR_filter_Imlementation::IRR_filter_Imlementation(Mat image, double error):
 Mat trac(cv::Mat src)
 {
     src.convertTo(src,CV_8UC1);
-    std::vector<std::vector<cv::Point> > contours;
+    std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours( src, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
 
@@ -39,7 +39,7 @@ Mat trac(cv::Mat src)
 Mat IRR_filter_Imlementation::proc()
 {
     edge=Mat::zeros(image.size(), CV_16SC1);
-    double dE=2*eps;
+    float dE=2*eps;
     int i=0;
     while(dE>eps && i<max_iter_L)
     {
@@ -48,7 +48,7 @@ Mat IRR_filter_Imlementation::proc()
         ///3.a.b)-----------------compute error  -------------------------
         compute_error();
         std::cout<<" sigma: "<< sigma<<std::endl;
-        tresh=0.1*sigma;
+        tresh=float(0.1)*sigma;
         ///3.c)-----------------compute control signal  -------------------------
         calculateControlSignal();
         ///3.d)-----------------compute magnutude of zero crossing in error signal zce(x,y)  -------------------------
@@ -58,7 +58,7 @@ Mat IRR_filter_Imlementation::proc()
         updateEdge();
         ///5)------------------ update lambda -----------------------------------------
         updateLambda();
-        dE=cv::norm(edge-E_old);
+        dE=static_cast<float>(cv::norm(edge-E_old));
         std::cout<<i<<"|dE: "<<dE<<std::endl;
         ++i;
     }
@@ -69,8 +69,7 @@ void IRR_filter_Imlementation::minimaze_energi_fun()
 {
     Mat U_n=Mat::zeros(image.size(), CV_32FC1);
     int begin=1;
-    double dU(2*eps);
-    //double dU1,ddU(2*eps);
+    float dU(2*eps);
 
     int i=0;
     while(dU>eps && i<max_iter_U)
@@ -93,7 +92,7 @@ void IRR_filter_Imlementation::minimaze_energi_fun()
                     U_min_row1[x]=U_n_row[x]-q*(T*U_n_row[x]-B_row[x]*image_row[x]-a)/T;
                 }
         }
-        dU=cv::norm(U_min-U_n);
+        dU=static_cast<float>(cv::norm(U_min-U_n));
         U_n=U_min.clone();
 
         i++;
@@ -115,7 +114,7 @@ void IRR_filter_Imlementation::compute_error()
 
         for(int x=0;x<image.cols;x++)
         {
-            double error = error_abs_row[x];
+            float error = error_abs_row[x];
             sigma+=error*error;
         }
     }
@@ -128,7 +127,7 @@ void IRR_filter_Imlementation::compute_error()
 void IRR_filter_Imlementation::calculateControlSignal()
 {
    cv::GaussianBlur( error_abs, control_signal, cv::Size(3,3), 0, 0, cv::BORDER_DEFAULT );
-   cv::subtract(control_signal, cv::Scalar(sigma), control_signal);
+   cv::subtract(control_signal, cv::Scalar_<float>(sigma), control_signal);
    cv::GaussianBlur( control_signal, control_signal, cv::Size(25,25), 0, 0, cv::BORDER_DEFAULT );
 }
 void IRR_filter_Imlementation::calculateZCE()
@@ -192,9 +191,9 @@ void IRR_filter_Imlementation::updateEdge()
     }
     edge_32f.convertTo(edge,CV_16SC1);
 }
-double IRR_filter_Imlementation::alha(float x)
+float IRR_filter_Imlementation::alha(float x)
 {
-    double exp=std::exp(-x/V_t);
+    float exp=std::exp(-x/V_t);
     return l_min*(1-exp)+x*(exp);
 }
 
@@ -209,8 +208,7 @@ void IRR_filter_Imlementation::updateLambda()
         float* L_row = L.ptr<float>(y);
         for(int x=0;x<L.cols;x++)
         {
-           // if(control_signal_row[x]>0 && zce_row[x]>tresh && L_row[x]>l_min )
-            if(L_row[x]>l_min )
+            if(control_signal_row[x]>0 && zce_row[x]>tresh && L_row[x]>l_min )
             {
                 L_v_row[x]=alha(L_v_row[x]);
                 L_h_row[x]=alha(L_h_row[x]);

@@ -10,7 +10,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    irr_tests.cpp \
     true_false_metric.cpp
 
 # The following define makes your compiler emit warnings if you use

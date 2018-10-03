@@ -3,11 +3,14 @@
 #include <tbb/parallel_for.h>
 #include "processing.h"
 #include "iostream"
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-consol_app::consol_app()
-{
-
-}
+consol_app::consol_app(int threshold, int threshold_max):
+    threshold_value(threshold), threshold_max_value(threshold_max)
+{}
 
 void consol_app::run(const QString& input_directory, const std::string& output_directory)
 {
@@ -37,8 +40,8 @@ void consol_app::run(const QString& input_directory, const std::string& output_d
                       std::cout<<"Procesing "<< filename.toStdString() <<std::endl;
                       //----------------- procesing ---------------------------
 
-                      cv::Mat image = cv::imread(filename.toStdString(),CV_LOAD_IMAGE_COLOR);
-                      cv::Mat dest = procesing(image,threshold_value,threshold_max_value,type,err,force,true);
+                      cv::Mat image = cv::imread(filename.toStdString().c_str(),CV_LOAD_IMAGE_COLOR);
+                      cv::Mat dest = procesing(image,threshold_value,threshold_max_value,type,force,true);
                       //---------------write result -----------------------------------
                       std::cout<<"Writing "<< output_directory+tmp.toStdString() <<std::endl;
                       std::string output_name=output_directory+tmp.toStdString();

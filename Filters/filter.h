@@ -5,37 +5,36 @@
 class Filter
 {
 public:
-    explicit Filter();
-    virtual cv::Mat proc(const cv::Mat& source) = 0;
+    explicit Filter(){}
+    virtual cv::Mat proc(const cv::Mat& source,
+                         int threh=0, int threh_max=256) = 0;
     virtual ~Filter() {}
 };
 
 class Sobel: public Filter
 {
 public:
-    cv::Mat proc(const cv::Mat& source);
+    cv::Mat proc(const cv::Mat& source,
+                 int threh=0, int threh_max=256);
 private:
     int scale = 1;
     int delta = 0;
     int ddepth = CV_16S;
-    int threh = 0;
-    int threh_max = 256;
 };
 
 
 class Canny: public Filter
 {
 public:
-    cv::Mat proc(const cv::Mat& source);
-private:
-    int threh = 0;
-    int threh_max = 256;
+    cv::Mat proc(const cv::Mat& source,
+                 int threh=0, int threh_max=256);
 };
 
 class Laplas: public Filter
 {
 public:
-    cv::Mat proc(const cv::Mat& source);
+    cv::Mat proc(const cv::Mat& source,
+                 int threh=0, int threh_max=256);
 private:
     int ddepth = CV_64F;
 };
@@ -43,17 +42,19 @@ private:
 class IRR: public Filter
 {
 public:
-    cv::Mat proc(const cv::Mat& source);
+    cv::Mat proc(const cv::Mat& source,
+                 int threh=0, int threh_max=256);
 public:
     double error;
 };
 
 
-class Convolution_filter: public Filter
+class ConvolutionFilter: public Filter
 {
 public:
-    Convolution_filter();
-    cv::Mat proc(const cv::Mat& source);
+    ConvolutionFilter();
+    cv::Mat proc(const cv::Mat& source,
+                 int threh=0, int threh_max=256);
 private:
     int kernel_size=5;
     cv::Mat kernel;
@@ -63,4 +64,15 @@ private:
     int BORDER_MODE=cv::BORDER_DEFAULT;
 
 };
+
+//class DenoizeFilter: public Filter
+//{
+//public:
+//    DenoizeFilter(float force);
+//    cv::Mat proc(const cv::Mat& source);
+//private:
+//    double eps=0.1;
+//    float force;
+//    double tay=0.25;
+//};
 #endif // FILTER_H

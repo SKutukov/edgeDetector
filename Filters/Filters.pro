@@ -35,12 +35,10 @@ HEADERS += \
     filter.h \
     filterfactory.h \
     auxiliary_function.h \
-    denoize_filter.h \
     irr_filter.h
 
 SOURCES += \
     filterfactory.cpp \
     filter.cpp \
     auxiliary_function.cpp \
-    denoize_filter.cpp \
     irr_filter.cpp

@@ -12,5 +12,6 @@
  * @param threh
  * @param threh_max
  */
-cv::Mat procesing(cv::Mat& image,int threh,int treh_max,filterType type,double error=1,float force=5.,bool isEq=false);
+cv::Mat procesing(cv::Mat& image,const int threh,const int treh_max,
+                  const filterType type,const float force=5.,const bool isEq=false);
 #endif // PROCESSING_H

@@ -14,12 +14,12 @@ public:
     IRR_filter_Imlementation(Mat image,double error=0.01);
     Mat proc();
 private:
-    Convolution_filter conv_filter;
-    double V_t=10;
-    double tresh=35;
-    double l_min=5;
-    double eps;
-    double q=1.;
+    ConvolutionFilter conv_filter;
+    float V_t=10;
+    float tresh=35;
+    float l_min=5;
+    float eps;
+    float q=1.;
     Mat edge;
     Mat image;
     Mat U_min;
@@ -36,8 +36,8 @@ private:
     Mat edge_32f;
     int max_iter_U = 5000;
     int max_iter_L =2;
-    double sigma;
-    double alha(float x);
+    float sigma;
+    float alha(float x);
     void calculateZCE();
     void calculateControlSignal();
     void minimaze_energi_fun();

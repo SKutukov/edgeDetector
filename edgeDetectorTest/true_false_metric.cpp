@@ -13,7 +13,7 @@ cv::Mat draw(cv::Mat& img,int thin)
 
     cv::findContours( img, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
     cv::Mat drawing = cv::Mat::zeros( img.size(), CV_8UC3 );
-    for( int i = 0; i< contours.size(); i++ )
+    for(size_t i = 0; i< contours.size(); i++ )
        {
          cv::Scalar color = cv::Scalar( 255, 255, 255);
          cv::drawContours( drawing, contours, i, color, thin, 8, hierarchy, 0, cv::Point() );
@@ -32,7 +32,6 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
 
     CV_Assert(test.size()==image.size());
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
-   // cv::threshold(image, image,200, 255, cv::THRESH_BINARY);
     int tr=0;
 
     cv::Mat dr=draw(test,1);
@@ -54,8 +53,6 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
     cv::cvtColor( test, test, cv::COLOR_BGR2GRAY,1);
     cv::threshold(test, test,200, 255, cv::THRESH_BINARY);
 
-   // cv::imshow("test",test);
-    //cv::waitKey();
     int true_positive=0,false_positive=0;
     for(int y=0; y<test.rows; y++)
     {
@@ -78,14 +75,14 @@ void True_false_Metric::apply(cv::Mat test, cv::Mat image)
     std::cout<<"true positive: "<<true_positive<<std::endl;
     std::cout<<"false positive: "<<false_positive<<std::endl;
     std::cout<<"true: "<<tr<<std::endl;
-    std::cout<<(double)true_positive/tr<<' '<<(double)false_positive/(true_positive+false_positive)<<std::endl;
-    double precision_=(double)true_positive/tr;
+    std::cout<<static_cast<double>(true_positive)/tr<<' '<<static_cast<double>(false_positive)/(true_positive+false_positive)<<std::endl;
+    double precision_=static_cast<double>(true_positive)/tr;
     double precision1=std::min(precision_,1.);
     precision+=precision1;
-    double recall_=(double)false_positive/(true_positive+false_positive);
+    double recall_=static_cast<double>(false_positive/(true_positive+false_positive));
     double recall1=std::min(recall_,1.);
     recall+=recall1;
     f+=(1+b*b)*precision1*(1-recall1)/(1-recall1+b*b*precision1);
-     std::cout<<"f: "<<(1+b*b)*precision1*(1-recall1)/(1-recall1+b*b*precision1)<<std::endl;
+    std::cout<<"f: "<<(1+b*b)*precision1*(1-recall1)/(1-recall1+b*b*precision1)<<std::endl;
     size++;
 }
