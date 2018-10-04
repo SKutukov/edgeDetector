@@ -8,12 +8,11 @@ class True_false_Metric
 public:
     True_false_Metric();
     void apply(cv::Mat test, cv::Mat src);
-    double precision=0;
-    double recall=0;
-    double f=0;
-    double size=0;
-    double b=0.5;
-
+    double precision = 0;
+    double recall = 0;
+    double f = 0;
+    double size = 0;
+    double b = 0.5;
 };
 
 #endif // TRUE_FALSE_METRIC_H

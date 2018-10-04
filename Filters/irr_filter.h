@@ -1,25 +1,25 @@
 #ifndef IRR_FILTER_H
 #define IRR_FILTER_H
 
-
+#include "filter.h"
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "filter.h"
 
 using cv::Mat;
 
 class IRR_filter_Imlementation
 {
 public:
-    IRR_filter_Imlementation(Mat image,double error=0.01);
+    IRR_filter_Imlementation(Mat image, float error = float(0.01));
     Mat proc();
+
 private:
     ConvolutionFilter conv_filter;
-    float V_t=10;
-    float tresh=35;
-    float l_min=5;
+    float V_t = 10;
+    float tresh = 35;
+    float l_min = 5;
     float eps;
-    float q=1.;
+    float q = 1.;
     Mat edge;
     Mat image;
     Mat U_min;
@@ -35,7 +35,7 @@ private:
     Mat error_abs;
     Mat edge_32f;
     int max_iter_U = 5000;
-    int max_iter_L =2;
+    int max_iter_L = 2;
     float sigma;
     float alha(float x);
     void calculateZCE();
